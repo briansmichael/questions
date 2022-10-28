@@ -364,7 +364,7 @@ public class DataService {
         }
         log.info("Updating {}", course);
         lockMap.put(course, Boolean.TRUE);
-        getContent(course);
+        //getContent(course);
         update(course);
         cleanupContentSource(course);
     }
