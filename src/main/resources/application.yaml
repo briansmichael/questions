@@ -1,5 +1,5 @@
 questions:
-  gs-decryptor-enabled: true
+  gs-decryptor-enabled: ${GS_DECRYPTOR_ENABLED}
   secret-key: ${GS_SECRET_KEY}
   init-vector: ${GS_INIT_VECTOR}
   db-location: ${GS_DB_LOCATION}
