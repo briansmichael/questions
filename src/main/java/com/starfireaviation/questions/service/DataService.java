@@ -68,8 +68,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -364,7 +367,7 @@ public class DataService {
         }
         log.info("Updating {}", course);
         lockMap.put(course, Boolean.TRUE);
-        //getContent(course);
+        getContent(course);
         update(course);
         cleanupContentSource(course);
     }
@@ -375,6 +378,29 @@ public class DataService {
      * @param course course
      */
     private void getContent(final String course) {
+        try {
+            final String source = String.format(applicationProperties.getContentSourceLocation(),
+                    getGIDCode(course), course);
+            final String destination = applicationProperties.getDbLocation() + "/" + course + ".db";
+            log.info("Copying {} to {}", source, destination);
+            URL website = new URL(source);
+            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+            FileOutputStream fos = new FileOutputStream(destination);
+            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            fos.close();
+            rbc.close();
+            log.info("Course content retrieved for {}", course);
+        } catch (IOException e) {
+            log.error("Error retrieving course content.  Error message: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Gets remote content.
+     *
+     * @param course course
+     */
+    private void getContentOrig(final String course) {
         try {
             final String source = String.format(applicationProperties.getContentSourceLocation(),
                     getGIDCode(course), course);
