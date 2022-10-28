@@ -14,16 +14,40 @@
  *  limitations under the License.
  */
 
-package com.starfireaviation.questions;
+package com.starfireaviation.questions.model;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import lombok.Data;
 
-@SpringBootTest
-class QuestionsApplicationTests {
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.Date;
 
-	@Test
-	void contextLoads() {
-	}
+/**
+ * Group.
+ */
+@Data
+@Entity
+@Table(name = "GROUPS")
+public class GroupEntity extends BaseEntity {
+
+    /**
+     * Group ID.
+     */
+    private Long groupId;
+
+    /**
+     * Group Name.
+     */
+    private String groupName;
+
+    /**
+     * Group Abbr.
+     */
+    private String groupAbbr;
+
+    /**
+     * Last Modified.
+     */
+    private Date lastModified;
 
 }

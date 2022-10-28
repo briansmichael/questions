@@ -14,16 +14,35 @@
  *  limitations under the License.
  */
 
-package com.starfireaviation.questions;
+package com.starfireaviation.questions.model;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import lombok.Data;
 
-@SpringBootTest
-class QuestionsApplicationTests {
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.Date;
 
-	@Test
-	void contextLoads() {
-	}
+/**
+ * Ref.
+ */
+@Data
+@Entity
+@Table(name = "REFS")
+public class RefEntity extends BaseEntity {
+
+    /**
+     * Ref ID.
+     */
+    private Long refId;
+
+    /**
+     * RefText.
+     */
+    private String refText;
+
+    /**
+     * Last Modified.
+     */
+    private Date lastModified;
 
 }

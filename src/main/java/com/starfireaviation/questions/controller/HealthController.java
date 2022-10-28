@@ -14,16 +14,25 @@
  *  limitations under the License.
  */
 
-package com.starfireaviation.questions;
+package com.starfireaviation.questions.controller;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@SpringBootTest
-class QuestionsApplicationTests {
+@Slf4j
+@RestController
+@RequestMapping("/health")
+public class HealthController {
 
-	@Test
-	void contextLoads() {
-	}
-
+    /**
+     * Endpoint to test application.
+     *
+     * @return success
+     */
+    @GetMapping()
+    public String health() {
+        return "OK";
+    }
 }

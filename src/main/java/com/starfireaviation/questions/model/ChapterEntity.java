@@ -14,16 +14,45 @@
  *  limitations under the License.
  */
 
-package com.starfireaviation.questions;
+package com.starfireaviation.questions.model;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import lombok.Data;
 
-@SpringBootTest
-class QuestionsApplicationTests {
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.Date;
 
-	@Test
-	void contextLoads() {
-	}
+/**
+ * Chapter.
+ */
+@Data
+@Entity
+@Table(name = "CHAPTERS")
+public class ChapterEntity extends BaseEntity {
+
+    /**
+     * Chapter ID.
+     */
+    private Long chapterId;
+
+    /**
+     * ChapterName.
+     */
+    private String chapterName;
+
+    /**
+     * Group ID.
+     */
+    private Long groupId;
+
+    /**
+     * Sort By.
+     */
+    private Long sortBy;
+
+    /**
+     * Last Modified.
+     */
+    private Date lastModified;
 
 }

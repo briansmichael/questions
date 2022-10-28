@@ -14,16 +14,35 @@
  *  limitations under the License.
  */
 
-package com.starfireaviation.questions;
+package com.starfireaviation.questions.model;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import lombok.Data;
 
-@SpringBootTest
-class QuestionsApplicationTests {
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.Date;
 
-	@Test
-	void contextLoads() {
-	}
+/**
+ * FigureSection.
+ */
+@Data
+@Entity
+@Table(name = "FIGURE_SECTIONS")
+public class FigureSectionEntity extends BaseEntity {
+
+    /**
+     * Figure Section ID.
+     */
+    private Long figureSectionId;
+
+    /**
+     * Figure Section.
+     */
+    private String figureSection;
+
+    /**
+     * Last Modified.
+     */
+    private Date lastModified;
 
 }

@@ -14,16 +14,7 @@
  *  limitations under the License.
  */
 
-package com.starfireaviation.questions;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
-class QuestionsApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}
+/**
+ * Model classes.
+ */
+package com.starfireaviation.questions.model;

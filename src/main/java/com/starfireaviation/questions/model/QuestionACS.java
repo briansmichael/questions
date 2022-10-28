@@ -14,16 +14,34 @@
  *  limitations under the License.
  */
 
-package com.starfireaviation.questions;
+package com.starfireaviation.questions.model;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import lombok.Data;
 
-@SpringBootTest
-class QuestionsApplicationTests {
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-	@Test
-	void contextLoads() {
-	}
+/**
+ * QuestionACS.
+ */
+@Data
+@Entity
+@Table(name = "QUESTIONS_ACS")
+public class QuestionACS extends BaseEntity {
+
+    /**
+     * Remote ID.
+     */
+    private Long remoteId;
+
+    /**
+     * Question ID.
+     */
+    private Long questionId;
+
+    /**
+     * ACS ID.
+     */
+    private Long acsId;
 
 }
