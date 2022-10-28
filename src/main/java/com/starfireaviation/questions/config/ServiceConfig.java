@@ -33,7 +33,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.http.HttpClient;
 import java.time.Duration;
 
 /**
@@ -45,16 +44,6 @@ import java.time.Duration;
 @EnableTransactionManagement
 @EnableConfigurationProperties({ ApplicationProperties.class })
 public class ServiceConfig {
-
-    /**
-     * HttpClient.
-     *
-     * @return HttpClient
-     */
-    @Bean
-    public HttpClient httpClient() {
-        return HttpClient.newHttpClient();
-    }
 
     /**
      * ObjectMapper.

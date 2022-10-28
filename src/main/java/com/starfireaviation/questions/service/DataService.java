@@ -917,42 +917,42 @@ public class DataService {
      * @param course course
      * @return gid
      */
-    private int getGIDCode(final String course) {
+    private String getGIDCode(final String course) {
         switch (course) {
             case "PVT":
-                return 1;
+                return "01";
             case "IFR":
-                return 2;
+                return "02";
             case "COM":
-                return CommonConstants.THREE;
+                return "03";
             case "CFI":
-                return CommonConstants.FOUR;
+                return "04";
             case "ATP":
-                return CommonConstants.FIVE;
+                return "05";
             case "FLE":
-                return CommonConstants.SIX;
+                return "06";
             case "AMG":
-                return CommonConstants.EIGHT;
+                return "08";
             case "AMA":
-                return CommonConstants.NINE;
+                return "09";
             case "AMP":
-                return CommonConstants.TEN;
+                return "10";
             case "PAR":
-                return CommonConstants.ELEVEN;
+                return "11";
             case "SPG":
-                return CommonConstants.THIRTEEN;
+                return "13";
             case "SPI":
-                return CommonConstants.FIFTEEN;
+                return "15";
             case "MIL":
-                return CommonConstants.SIXTEEN;
+                return "16";
             case "IOF":
-                return CommonConstants.SEVENTEEN;
+                return "17";
             case "MCI":
-                return CommonConstants.EIGHTEEN;
+                return "18";
             case "RDP":
-                return CommonConstants.NINETEEN;
+                return "19";
             default:
-                return -1;
+                return "";
         }
     }
 
