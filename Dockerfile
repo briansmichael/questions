@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-openjre-alpine-musl:11
+FROM bellsoft/liberica-openjdk-alpine-musl:11
 WORKDIR /
 ARG VERSION
 ADD /target/questions-$VERSION.jar app.jar
