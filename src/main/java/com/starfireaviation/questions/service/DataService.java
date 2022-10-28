@@ -191,8 +191,8 @@ public class DataService {
     /**
      * Images.
      */
-    private static final String IMAGES_QUERY = "SELECT ID, PicType, GroupID, TestID, ImageName, Desc, FileName, BinImage, "
-            + "LastMod, FigureSectionID, PixelsPerNM, SortBy, ImageLibraryID FROM Images";
+    private static final String IMAGES_QUERY = "SELECT ID, PicType, GroupID, TestID, ImageName, Desc, FileName, "
+            + "BinImage, LastMod, FigureSectionID, PixelsPerNM, SortBy, ImageLibraryID FROM Images";
 
     /**
      * ApplicationProperties.
@@ -338,9 +338,9 @@ public class DataService {
      */
     @Async
     public void updateAllCourses() {
-        if (lockMap.containsKey(CommonConstants.ALL)) {
-            return;
-        }
+//        if (lockMap.containsKey(CommonConstants.ALL)) {
+//            return;
+//        }
         log.info("Updating all questions for all courses...");
         lockMap.put(CommonConstants.ALL, Boolean.TRUE);
         final String[] courses = CommonConstants.COURSE_LIST.split(",");
@@ -358,7 +358,7 @@ public class DataService {
      */
     @Async
     public void updateCourse(final String course) {
-        if (lockMap.containsKey(course) || lockMap.containsKey(CommonConstants.ALL)) {
+        if (lockMap.containsKey(course) /* || lockMap.containsKey(CommonConstants.ALL) */) {
             log.info("Not updating course: {} due to lock being set.", course);
             return;
         }
