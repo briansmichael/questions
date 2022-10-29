@@ -338,9 +338,9 @@ public class DataService {
      */
     @Async
     public void updateAllCourses() {
-        if (lockMap.containsKey(CommonConstants.ALL)) {
-            return;
-        }
+//        if (lockMap.containsKey(CommonConstants.ALL)) {
+//            return;
+//        }
         log.info("Updating all questions for all courses...");
         lockMap.put(CommonConstants.ALL, Boolean.TRUE);
         final String[] courses = CommonConstants.COURSE_LIST.split(",");
@@ -358,10 +358,10 @@ public class DataService {
      */
     @Async
     public void updateCourse(final String course) {
-        if (lockMap.containsKey(course) || lockMap.containsKey(CommonConstants.ALL)) {
-            log.info("Not updating course: {} due to lock being set.", course);
-            return;
-        }
+//        if (lockMap.containsKey(course) || lockMap.containsKey(CommonConstants.ALL)) {
+//            log.info("Not updating course: {} due to lock being set.", course);
+//            return;
+//        }
         log.info("Updating {}", course);
         lockMap.put(course, Boolean.TRUE);
         getContent(course);
