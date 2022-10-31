@@ -106,11 +106,11 @@ public class QuestionController {
      * @return list of question ids
      */
     @GetMapping
-    public List<Long> getQuestions(@RequestParam("course") final String course,
-                                   @RequestParam("acs") final Long acsId,
-                                   @RequestParam("lsc") final String learningStatementCode,
-                                   @RequestParam("unit") final String unit,
-                                   @RequestParam("subunit") final String subUnit) {
+    public List<Long> getQuestions(@RequestParam(value = "course", required = false) final String course,
+                                   @RequestParam(value = "acs", required = false) final Long acsId,
+                                   @RequestParam(value = "lsc", required = false) final String learningStatementCode,
+                                   @RequestParam(value = "unit", required = false) final String unit,
+                                   @RequestParam(value = "subunit", required = false) final String subUnit) {
         return questionService.getQuestions(course, acsId, learningStatementCode, unit, subUnit);
     }
 
@@ -187,7 +187,7 @@ public class QuestionController {
         final Image image = new Image();
         image.setId(imageEntity.getId());
         image.setRemoteId(imageEntity.getRemoteId());
-        final String fileName = applicationProperties.getDbLocation() + "/" + imageEntity.getFileName();
+        final String fileName = applicationProperties.getImageDir() + "/" + imageEntity.getFileName();
         try {
             image.setBinImage(FileUtils.readFileToByteArray(new File(fileName)));
         } catch (IOException e) {

@@ -62,9 +62,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 //import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.crypto.InvalidCipherTextException;
+import org.hibernate.exception.DataException;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -899,21 +901,20 @@ public class DataService {
                 image.setGroupId(rs.getLong(CommonConstants.THREE));
                 image.setTestId(rs.getLong(CommonConstants.FOUR));
                 image.setImageName(rs.getString(CommonConstants.FIVE));
-                final String description = rs.getString(CommonConstants.SIX);
-                //image.setDescription(description);
+                image.setDescription(rs.getString(CommonConstants.SIX));
                 image.setFileName(rs.getString(CommonConstants.SEVEN));
                 image.setLastModified(rs.getDate(CommonConstants.NINE));
                 image.setFigureSectionId(rs.getLong(CommonConstants.TEN));
                 image.setPixelsPerNM(rs.getDouble(CommonConstants.ELEVEN));
                 image.setSortBy(rs.getLong(CommonConstants.TWELVE));
                 image.setImageLibraryId(rs.getLong(CommonConstants.THIRTEEN));
-                final String fileName = applicationProperties.getDbLocation() + "/" + image.getFileName();
+                final String fileName = applicationProperties.getImageDir() + "/" + image.getFileName();
                 log.info("Saving {}", fileName);
                 FileUtils.writeByteArrayToFile(new File(fileName), rs.getBytes(CommonConstants.EIGHT));
                 //image.setBinImage(rs.getBytes(CommonConstants.EIGHT));
                 imageRepository.save(image);
             }
-        } catch (IOException e) {
+        } catch (IOException | DataException | DataIntegrityViolationException e) {
             log.error("Unable to save image.  Error message: {}", e.getMessage());
         }
     }

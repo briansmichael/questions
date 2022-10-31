@@ -101,14 +101,17 @@ public class QuestionService {
                                    final String subUnit) {
         final List<Long> questionIds = new ArrayList<>();
         if (course != null) {
+            log.info("course provided is {}", course);
             questionIds.addAll(questionRepository
                     .findByCourse(course)
                     .orElseThrow()
                     .stream()
                     .map(BaseEntity::getId)
                     .collect(Collectors.toList()));
+            log.info("(course) questionIds size is: {}", questionIds.size());
         }
         if (acsId != null) {
+            log.info("acsId provided is {}", acsId);
             final List<Long> list = questionRepository
                     .findByAcsId(acsId)
                     .orElseThrow()
@@ -120,8 +123,10 @@ public class QuestionService {
             } else {
                 questionIds.retainAll(list);
             }
+            log.info("(acsId) questionIds size is: {}", questionIds.size());
         }
         if (learningStatementCode != null) {
+            log.info("learningStatementCode provided is {}", learningStatementCode);
             final List<Long> list = questionRepository
                     .findByLearningStatementCode(learningStatementCode)
                     .orElseThrow()
@@ -133,8 +138,10 @@ public class QuestionService {
             } else {
                 questionIds.retainAll(list);
             }
+            log.info("(learningStatementCode) questionIds size is: {}", questionIds.size());
         }
         if (unit != null) {
+            log.info("unit provided is {}", unit);
             final List<Long> list = questionRepository
                     .findByUnit(unit)
                     .orElseThrow()
@@ -146,8 +153,10 @@ public class QuestionService {
             } else {
                 questionIds.retainAll(list);
             }
+            log.info("(unit) questionIds size is: {}", questionIds.size());
         }
         if (subUnit != null) {
+            log.info("subUnit provided is {}", subUnit);
             final List<Long> list = questionRepository
                     .findBySubUnit(subUnit)
                     .orElseThrow()
@@ -159,6 +168,7 @@ public class QuestionService {
             } else {
                 questionIds.retainAll(list);
             }
+            log.info("(subUnit) questionIds size is: {}", questionIds.size());
         }
         return questionIds;
     }

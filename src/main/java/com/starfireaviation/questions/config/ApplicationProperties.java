@@ -54,6 +54,11 @@ public class ApplicationProperties {
     private String contentSourceLocation;
 
     /**
+     * Image(s) directory.
+     */
+    private String imageDir;
+
+    /**
      * Connect Timeout.
      */
     private int connectTimeout;

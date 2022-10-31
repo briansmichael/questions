@@ -4,6 +4,7 @@ questions:
   init-vector: ${GS_INIT_VECTOR}
   db-location: ${GS_DB_LOCATION}
   content-source-location: ${CONTENT_SOURCE_LOCATION}
+  image-dir: ${IMAGE_DIR}
 
 spring:
   datasource:
