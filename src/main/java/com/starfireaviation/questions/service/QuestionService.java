@@ -19,12 +19,18 @@ package com.starfireaviation.questions.service;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import com.starfireaviation.questions.exception.ResourceNotFoundException;
+import com.starfireaviation.questions.model.BaseEntity;
 import com.starfireaviation.questions.model.QuestionEntity;
 import com.starfireaviation.questions.model.QuestionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Question Service.
@@ -78,4 +84,82 @@ public class QuestionService {
         return questionEntity;
     }
 
+    /**
+     * Gets a list of question IDs for provided search criteria.
+     *
+     * @param course optional course
+     * @param acsId optional ACS ID
+     * @param learningStatementCode optional learning statement code
+     * @param unit optional unit
+     * @param subUnit option subUnit
+     * @return list of question IDs
+     */
+    public List<Long> getQuestions(final String course,
+                                   final Long acsId,
+                                   final String learningStatementCode,
+                                   final String unit,
+                                   final String subUnit) {
+        final List<Long> questionIds = new ArrayList<>();
+        if (course != null) {
+            questionIds.addAll(questionRepository
+                    .findByCourse(course)
+                    .orElseThrow()
+                    .stream()
+                    .map(BaseEntity::getId)
+                    .collect(Collectors.toList()));
+        }
+        if (acsId != null) {
+            final List<Long> list = questionRepository
+                    .findByAcsId(acsId)
+                    .orElseThrow()
+                    .stream()
+                    .map(BaseEntity::getId)
+                    .collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(questionIds)) {
+                questionIds.addAll(list);
+            } else {
+                questionIds.retainAll(list);
+            }
+        }
+        if (learningStatementCode != null) {
+            final List<Long> list = questionRepository
+                    .findByLearningStatementCode(learningStatementCode)
+                    .orElseThrow()
+                    .stream()
+                    .map(BaseEntity::getId)
+                    .collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(questionIds)) {
+                questionIds.addAll(list);
+            } else {
+                questionIds.retainAll(list);
+            }
+        }
+        if (unit != null) {
+            final List<Long> list = questionRepository
+                    .findByUnit(unit)
+                    .orElseThrow()
+                    .stream()
+                    .map(BaseEntity::getId)
+                    .collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(questionIds)) {
+                questionIds.addAll(list);
+            } else {
+                questionIds.retainAll(list);
+            }
+        }
+        if (subUnit != null) {
+            final List<Long> list = questionRepository
+                    .findBySubUnit(subUnit)
+                    .orElseThrow()
+                    .stream()
+                    .map(BaseEntity::getId)
+                    .collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(questionIds)) {
+                questionIds.addAll(list);
+            } else {
+                questionIds.retainAll(list);
+            }
+        }
+        return questionIds;
+    }
 }

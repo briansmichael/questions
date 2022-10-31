@@ -71,7 +71,7 @@ public class ImageEntity extends BaseEntity {
      * Binary Image.
      */
     @Lob
-    @Column(name = "binImage", columnDefinition = "BLOB")
+    @Column(name = "binImage", columnDefinition = "LONGBLOB")
     private byte[] binImage;
 
     /**

@@ -64,6 +64,14 @@ public interface QuestionRefImageRepository extends JpaRepository<QuestionRefIma
      * @param id Long
      * @return QuestionRefImages
      */
-    QuestionRefImageEntity findById(long id);
+    Optional<QuestionRefImageEntity> findById(long id);
+
+    /**
+     * Gets a QuestionRefImages.
+     *
+     * @param id Long
+     * @return QuestionRefImages
+     */
+    Optional<List<QuestionRefImageEntity>> findByQuestionId(long id);
 
 }

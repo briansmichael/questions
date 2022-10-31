@@ -38,6 +38,38 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
     Optional<QuestionEntity> findByRemoteIdAndCourse(Long id, String course);
 
     /**
+     * Gets questions for ACS.
+     *
+     * @param acsId ACS ID
+     * @return list of questions
+     */
+    Optional<List<QuestionEntity>> findByAcsId(Long acsId);
+
+    /**
+     * Gets questions for Learning Statement Code.
+     *
+     * @param learningStatementCode LSC
+     * @return list of questions
+     */
+    Optional<List<QuestionEntity>> findByLearningStatementCode(String learningStatementCode);
+
+    /**
+     * Gets questions for Unit.
+     *
+     * @param unit unit
+     * @return list of questions
+     */
+    Optional<List<QuestionEntity>> findByUnit(String unit);
+
+    /**
+     * Gets questions for Sub Unit.
+     *
+     * @param subUnit sub-unit
+     * @return list of questions
+     */
+    Optional<List<QuestionEntity>> findBySubUnit(String subUnit);
+
+    /**
      * Gets a question by course.
      *
      * @param course Course

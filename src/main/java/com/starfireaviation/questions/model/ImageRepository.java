@@ -64,6 +64,6 @@ public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
      * @param id Long
      * @return Image
      */
-    ImageEntity findById(long id);
+    Optional<ImageEntity> findById(long id);
 
 }

@@ -17,12 +17,14 @@
 package com.starfireaviation.questions.controller;
 
 import com.starfireaviation.model.Answer;
+import com.starfireaviation.model.Image;
 import com.starfireaviation.model.Question;
-import com.starfireaviation.questions.exception.ResourceNotFoundException;
 import com.starfireaviation.questions.model.AnswerEntity;
+import com.starfireaviation.questions.model.ImageEntity;
 import com.starfireaviation.questions.model.QuestionEntity;
 import com.starfireaviation.questions.service.AnswerService;
 import com.starfireaviation.questions.service.DataService;
+import com.starfireaviation.questions.service.ImageService;
 import com.starfireaviation.questions.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -59,6 +62,12 @@ public class QuestionController {
     private AnswerService answerService;
 
     /**
+     * ImageService.
+     */
+    @Autowired
+    private ImageService imageService;
+
+    /**
      * Updates all questions for all courses.
      */
     @PostMapping(path = "/update")
@@ -77,27 +86,63 @@ public class QuestionController {
     }
 
     /**
+     * Gets list of question IDs matching search criteria.
+     *
+     * @param course optional course
+     * @param acsId optional ACS ID
+     * @param learningStatementCode optional learning statement code
+     * @param unit optional unit
+     * @param subUnit optional sub unit
+     * @return list of question ids
+     */
+    @GetMapping
+    public List<Long> getQuestions(@RequestParam("course") final String course,
+                                   @RequestParam("acs") final Long acsId,
+                                   @RequestParam("lsc") final String learningStatementCode,
+                                   @RequestParam("unit") final String unit,
+                                   @RequestParam("subunit") final String subUnit) {
+        return questionService.getQuestions(course, acsId, learningStatementCode, unit, subUnit);
+    }
+
+    /**
      * Gets a question by ID.
      *
      * @param id question ID
      * @return Question
-     * @throws ResourceNotFoundException when question is not found
      */
     @GetMapping(path = "/{id}")
-    public Question getQuestion(@PathVariable("id") final Long id) throws ResourceNotFoundException {
-        return map(questionService.get(id));
+    public Question getQuestion(@PathVariable("id") final Long id) {
+        final Question question = map(questionService.get(id));
+        question.setAnswers(getQuestionAnswers(id));
+        question.setImages(getQuestionImages(id));
+        return question;
     }
 
     /**
-     * Gets an answer by ID.
+     * Gets answers by Question ID.
      *
-     * @param id answer ID
-     * @return Answer
+     * @param id question ID
+     * @return Answer list
      */
     @GetMapping(path = "/{id}/answers")
     public List<Answer> getQuestionAnswers(@PathVariable("id") final Long id) {
         return answerService
                 .getAnswerForQuestionId(id)
+                .stream()
+                .map(this::map)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets images by Question ID.
+     *
+     * @param id question ID
+     * @return Image list
+     */
+    @GetMapping(path = "/{id}/images")
+    public List<Image> getQuestionImages(@PathVariable("id") final Long id) {
+        return imageService
+                .getImageForQuestionId(id)
                 .stream()
                 .map(this::map)
                 .collect(Collectors.toList());
@@ -120,6 +165,31 @@ public class QuestionController {
         answer.setText(answerEntity.getText());
         answer.setDiscussion(answerEntity.getDiscussion());
         return answer;
+    }
+
+    /**
+     * Map ImageEntity to Image.
+     *
+     * @param imageEntity ImageEntity
+     * @return Image
+     */
+    private Image map(final ImageEntity imageEntity) {
+        final Image image = new Image();
+        image.setId(imageEntity.getId());
+        image.setRemoteId(imageEntity.getRemoteId());
+        image.setBinImage(imageEntity.getBinImage());
+        image.setImageName(imageEntity.getImageName());
+        image.setLastModified(imageEntity.getLastModified());
+        image.setDescription(imageEntity.getDescription());
+        image.setFigureSectionId(imageEntity.getFigureSectionId());
+        image.setFileName(imageEntity.getFileName());
+        image.setGroupId(imageEntity.getGroupId());
+        image.setImageLibraryId(imageEntity.getImageLibraryId());
+        image.setPicType(imageEntity.getPicType());
+        image.setPixelsPerNM(imageEntity.getPixelsPerNM());
+        image.setSortBy(imageEntity.getSortBy());
+        image.setTestId(imageEntity.getTestId());
+        return image;
     }
 
     /**
