@@ -60,7 +60,7 @@ import com.starfireaviation.questions.model.TextConstRepository;
 import com.starfireaviation.questions.util.GSDecryptor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
+//import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -900,9 +900,7 @@ public class DataService {
                 image.setTestId(rs.getLong(CommonConstants.FOUR));
                 image.setImageName(rs.getString(CommonConstants.FIVE));
                 final String description = rs.getString(CommonConstants.SIX);
-                if (!StringUtils.containsAny(description, "\\x")) {
-                    image.setDescription(description);
-                }
+                //image.setDescription(description);
                 image.setFileName(rs.getString(CommonConstants.SEVEN));
                 image.setLastModified(rs.getDate(CommonConstants.NINE));
                 image.setFigureSectionId(rs.getLong(CommonConstants.TEN));

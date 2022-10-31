@@ -19,6 +19,7 @@ package com.starfireaviation.questions.controller;
 import com.starfireaviation.model.Answer;
 import com.starfireaviation.model.Image;
 import com.starfireaviation.model.Question;
+import com.starfireaviation.questions.config.ApplicationProperties;
 import com.starfireaviation.questions.model.AnswerEntity;
 import com.starfireaviation.questions.model.ImageEntity;
 import com.starfireaviation.questions.model.QuestionEntity;
@@ -27,6 +28,7 @@ import com.starfireaviation.questions.service.DataService;
 import com.starfireaviation.questions.service.ImageService;
 import com.starfireaviation.questions.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,6 +70,12 @@ public class QuestionController {
      */
     @Autowired
     private ImageService imageService;
+
+    /**
+     * ApplicationProperties.
+     */
+    @Autowired
+    private ApplicationProperties applicationProperties;
 
     /**
      * Updates all questions for all courses.
@@ -177,7 +187,12 @@ public class QuestionController {
         final Image image = new Image();
         image.setId(imageEntity.getId());
         image.setRemoteId(imageEntity.getRemoteId());
-        image.setBinImage(imageEntity.getBinImage());
+        final String fileName = applicationProperties.getDbLocation() + "/" + imageEntity.getFileName();
+        try {
+            image.setBinImage(FileUtils.readFileToByteArray(new File(fileName)));
+        } catch (IOException e) {
+            log.error("Unable to read {}", fileName);
+        }
         image.setImageName(imageEntity.getImageName());
         image.setLastModified(imageEntity.getLastModified());
         image.setDescription(imageEntity.getDescription());
