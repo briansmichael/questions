@@ -417,17 +417,17 @@ public class DataService {
             DriverManager.registerDriver(new org.sqlite.JDBC());
             conn = DriverManager.getConnection(jdbcUrl);
             log.info("Getting ACS table data for course: {}", course);
-            getACS(conn);
+            //getACS(conn);
             log.info("Getting ANSWERS table data for course: {}", course);
-            getAnswers(conn);
+            //getAnswers(conn);
             log.info("Getting BINARY_DATA table data for course: {}", course);
-            getBinaryData(conn);
+            //getBinaryData(conn);
             log.info("Getting CHAPTERS table data for course: {}", course);
-            getChapters(conn);
+            //getChapters(conn);
             log.info("Getting FIGURE_SECTIONS table data for course: {}", course);
-            getFigureSections(conn);
+            //getFigureSections(conn);
             log.info("Getting GROUPS table data for course: {}", course);
-            getGroups(conn);
+            //getGroups(conn);
             log.info("Getting IMAGES table data for course: {}", course);
             getImages(conn);
             log.info("Getting LIBRARY table data for course: {}", course);
@@ -900,14 +900,18 @@ public class DataService {
                 image.setImageName(rs.getString(CommonConstants.FIVE));
                 image.setDescription(rs.getString(CommonConstants.SIX));
                 image.setFileName(rs.getString(CommonConstants.SEVEN));
-                image.setBinImage(rs.getBytes(CommonConstants.EIGHT));
                 image.setLastModified(rs.getDate(CommonConstants.NINE));
                 image.setFigureSectionId(rs.getLong(CommonConstants.TEN));
                 image.setPixelsPerNM(rs.getDouble(CommonConstants.ELEVEN));
                 image.setSortBy(rs.getLong(CommonConstants.TWELVE));
                 image.setImageLibraryId(rs.getLong(CommonConstants.THIRTEEN));
+                final File file = new File(applicationProperties.getDbLocation() + "/" + image.getFileName());
+                FileUtils.writeByteArrayToFile(file, rs.getBytes(CommonConstants.EIGHT));
+                //image.setBinImage(rs.getBytes(CommonConstants.EIGHT));
                 imageRepository.save(image);
             }
+        } catch (IOException e) {
+            log.error("Unable to save image.  Error message: {}", e.getMessage());
         }
     }
 
