@@ -60,6 +60,7 @@ import com.starfireaviation.questions.model.TextConstRepository;
 import com.starfireaviation.questions.util.GSDecryptor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -898,15 +899,19 @@ public class DataService {
                 image.setGroupId(rs.getLong(CommonConstants.THREE));
                 image.setTestId(rs.getLong(CommonConstants.FOUR));
                 image.setImageName(rs.getString(CommonConstants.FIVE));
-                image.setDescription(rs.getString(CommonConstants.SIX));
+                final String description = rs.getString(CommonConstants.SIX);
+                if (!StringUtils.containsAny(description, "\\x")) {
+                    image.setDescription(description);
+                }
                 image.setFileName(rs.getString(CommonConstants.SEVEN));
                 image.setLastModified(rs.getDate(CommonConstants.NINE));
                 image.setFigureSectionId(rs.getLong(CommonConstants.TEN));
                 image.setPixelsPerNM(rs.getDouble(CommonConstants.ELEVEN));
                 image.setSortBy(rs.getLong(CommonConstants.TWELVE));
                 image.setImageLibraryId(rs.getLong(CommonConstants.THIRTEEN));
-                final File file = new File(applicationProperties.getDbLocation() + "/" + image.getFileName());
-                FileUtils.writeByteArrayToFile(file, rs.getBytes(CommonConstants.EIGHT));
+                final String fileName = applicationProperties.getDbLocation() + "/" + image.getFileName();
+                log.info("Saving {}", fileName);
+                FileUtils.writeByteArrayToFile(new File(fileName), rs.getBytes(CommonConstants.EIGHT));
                 //image.setBinImage(rs.getBytes(CommonConstants.EIGHT));
                 imageRepository.save(image);
             }
