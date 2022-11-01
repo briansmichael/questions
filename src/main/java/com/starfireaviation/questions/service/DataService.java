@@ -1038,7 +1038,7 @@ public class DataService {
                             image.getRemoteId(), e.getMessage());
                 }
             }
-        } catch (IOException | DataException | DataIntegrityViolationException e) {
+        } catch (IOException | DataException | DataIntegrityViolationException | IllegalArgumentException e) {
             log.error("Unable to save image.  Error message: {}", e.getMessage());
         }
     }
