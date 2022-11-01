@@ -16,15 +16,12 @@
 
 package com.starfireaviation.questions.service;
 
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.map.IMap;
 import com.starfireaviation.questions.exception.ResourceNotFoundException;
 import com.starfireaviation.questions.model.BaseEntity;
 import com.starfireaviation.questions.model.QuestionEntity;
 import com.starfireaviation.questions.model.QuestionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -46,26 +43,11 @@ public class QuestionService {
     private QuestionRepository questionRepository;
 
     /**
-     * HazelcastInstance.
-     */
-    private final IMap<Long, QuestionEntity> cache;
-
-    /**
-     * Constructor.
-     *
-     * @param hazelcastInstance HazelcastInstance
-     */
-    public QuestionService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
-        cache = hazelcastInstance.getMap("questions");
-    }
-
-    /**
      * Deletes a question.
      *
      * @param id id
      */
     public void delete(final long id) throws ResourceNotFoundException {
-        cache.remove(id);
         questionRepository.delete(get(id));
     }
 
@@ -76,12 +58,7 @@ public class QuestionService {
      * @return Question for the provided ID
      */
     public QuestionEntity get(final long id) {
-        if (cache.containsKey(id)) {
-            return cache.get(id);
-        }
-        final QuestionEntity questionEntity = questionRepository.findById(id).orElseThrow();
-        cache.put(id, questionEntity);
-        return questionEntity;
+        return questionRepository.findById(id).orElseThrow();
     }
 
     /**

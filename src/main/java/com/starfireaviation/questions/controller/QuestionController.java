@@ -16,6 +16,8 @@
 
 package com.starfireaviation.questions.controller;
 
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.map.IMap;
 import com.starfireaviation.model.Answer;
 import com.starfireaviation.model.Image;
 import com.starfireaviation.model.Question;
@@ -30,6 +32,7 @@ import com.starfireaviation.questions.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,6 +81,20 @@ public class QuestionController {
     private ApplicationProperties applicationProperties;
 
     /**
+     * HazelcastInstance.
+     */
+    private final IMap<Long, Question> cache;
+
+    /**
+     * Constructor.
+     *
+     * @param hazelcastInstance HazelcastInstance
+     */
+    public QuestionController(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("questions");
+    }
+
+    /**
      * Updates all questions for all courses.
      */
     @PostMapping(path = "/update")
@@ -122,9 +139,13 @@ public class QuestionController {
      */
     @GetMapping(path = "/{id}")
     public Question getQuestion(@PathVariable("id") final Long id) {
+        if (cache.containsKey(id)) {
+            return cache.get(id);
+        }
         final Question question = map(questionService.get(id));
         question.setAnswers(getQuestionAnswers(id));
         question.setImages(getQuestionImages(id));
+        cache.put(id, question);
         return question;
     }
 
@@ -136,6 +157,9 @@ public class QuestionController {
      */
     @GetMapping(path = "/{id}/answers")
     public List<Answer> getQuestionAnswers(@PathVariable("id") final Long id) {
+        if (cache.containsKey(id)) {
+            return cache.get(id).getAnswers();
+        }
         return answerService
                 .getAnswerForQuestionId(id)
                 .stream()
@@ -151,6 +175,9 @@ public class QuestionController {
      */
     @GetMapping(path = "/{id}/images")
     public List<Image> getQuestionImages(@PathVariable("id") final Long id) {
+        if (cache.containsKey(id)) {
+            return cache.get(id).getImages();
+        }
         return imageService
                 .getImageForQuestionId(id)
                 .stream()

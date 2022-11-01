@@ -95,8 +95,7 @@ public class QuizController {
          */
         @GetMapping(path = {"/{quizId}" })
         public Quiz get(@PathVariable("quizId") final long quizId, final Principal principal)
-                throws ResourceNotFoundException,
-                AccessDeniedException {
+                throws ResourceNotFoundException, AccessDeniedException {
                 userValidator.accessAnyAuthenticated(principal);
                 return map(quizService.get(quizId));
         }
