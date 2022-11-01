@@ -1028,7 +1028,7 @@ public class DataService {
                 image.setSortBy(rs.getLong(CommonConstants.TWELVE));
                 image.setImageLibraryId(rs.getLong(CommonConstants.THIRTEEN));
                 final String fileName = applicationProperties.getImageDir() + "/" + image.getFileName();
-                log.info("Saving {}", fileName);
+                log.debug("Saving {}", fileName);
                 FileUtils.writeByteArrayToFile(new File(fileName), rs.getBytes(CommonConstants.EIGHT));
                 //image.setBinImage(rs.getBytes(CommonConstants.EIGHT));
                 try {
