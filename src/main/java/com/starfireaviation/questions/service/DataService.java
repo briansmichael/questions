@@ -489,8 +489,15 @@ public class DataService {
                 textConst.setGroupId(rs.getLong(CommonConstants.FOUR));
                 textConst.setTestId(rs.getLong(CommonConstants.FIVE));
                 textConst.setLastModified(rs.getDate(CommonConstants.SIX));
-                textConstRepository.save(textConst);
+                try {
+                    textConstRepository.save(textConst);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save text const: {}.  Error message: {}",
+                            textConst.getConstName(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save text const.  Error message: {}", e.getMessage());
         }
     }
 
@@ -512,8 +519,15 @@ public class DataService {
                 source.setTitle(rs.getString(CommonConstants.THREE));
                 source.setAbbreviation(rs.getString(CommonConstants.FOUR));
                 source.setLastModified(rs.getDate(CommonConstants.FIVE));
-                sourcesRepository.save(source);
+                try {
+                    sourcesRepository.save(source);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save source: {}.  Error message: {}",
+                            source.getTitle(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save sources.  Error message: {}", e.getMessage());
         }
     }
 
@@ -536,8 +550,15 @@ public class DataService {
                 test.setGroupId(rs.getLong(CommonConstants.FOUR));
                 test.setSortBy(rs.getLong(CommonConstants.FIVE));
                 test.setLastModified(rs.getDate(CommonConstants.SIX));
-                testsRepository.save(test);
+                try {
+                    testsRepository.save(test);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save test: {}.  Error message: {}",
+                            test.getTestName(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save tests.  Error message: {}", e.getMessage());
         }
     }
 
@@ -561,8 +582,15 @@ public class DataService {
                 subjectMatterCode.setDescription(rs.getString(CommonConstants.FOUR));
                 subjectMatterCode.setLastModified(rs.getDate(CommonConstants.FIVE));
                 subjectMatterCode.setIsLSC(rs.getLong(CommonConstants.SIX));
-                subjectMatterCodesRepository.save(subjectMatterCode);
+                try {
+                    subjectMatterCodesRepository.save(subjectMatterCode);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save subject matter code: {}.  Error message: {}",
+                            subjectMatterCode.getCode(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save subject matter codes.  Error message: {}", e.getMessage());
         }
     }
 
@@ -582,8 +610,15 @@ public class DataService {
                 ref.setRefId(remoteId);
                 ref.setRefText(rs.getString(2));
                 ref.setLastModified(rs.getDate(CommonConstants.THREE));
-                refsRepository.save(ref);
+                try {
+                    refsRepository.save(ref);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save ref: {}.  Error message: {}",
+                            ref.getRefText(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save refs.  Error message: {}", e.getMessage());
         }
     }
 
@@ -608,8 +643,15 @@ public class DataService {
                 questionTest.setSortBy(rs.getLong(CommonConstants.FIVE));
                 questionTest.setLinkChapter(rs.getLong(CommonConstants.SIX));
                 questionTest.setIsImportant(rs.getLong(CommonConstants.SEVEN));
-                questionTestsRepository.save(questionTest);
+                try {
+                    questionTestsRepository.save(questionTest);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save question test: {}.  Error message: {}",
+                            questionTest.getRemoteId(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save questions tests.  Error message: {}", e.getMessage());
         }
     }
 
@@ -630,8 +672,15 @@ public class DataService {
                 questionReference.setRemoteId(remoteId);
                 questionReference.setQuestionId(rs.getLong(2));
                 questionReference.setRefId(rs.getLong(CommonConstants.THREE));
-                questionReferencesRepository.save(questionReference);
+                try {
+                    questionReferencesRepository.save(questionReference);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save question reference: {}.  Error message: {}",
+                            questionReference.getRemoteId(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save question references.  Error message: {}", e.getMessage());
         }
     }
 
@@ -653,8 +702,15 @@ public class DataService {
                 questionRefImage.setQuestionId(rs.getLong(2));
                 questionRefImage.setImageId(rs.getLong(CommonConstants.THREE));
                 questionRefImage.setAnnotation(rs.getString(CommonConstants.FOUR));
-                questionRefImagesRepository.save(questionRefImage);
+                try {
+                    questionRefImagesRepository.save(questionRefImage);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save question ref image: {}.  Error message: {}",
+                            questionRefImage.getRemoteId(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save question ref images.  Error message: {}", e.getMessage());
         }
     }
 
@@ -675,8 +731,15 @@ public class DataService {
                 questionACS.setRemoteId(remoteId);
                 questionACS.setQuestionId(rs.getLong(2));
                 questionACS.setAcsId(rs.getLong(CommonConstants.THREE));
-                questionACSRepository.save(questionACS);
+                try {
+                    questionACSRepository.save(questionACS);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save question ACS: {}.  Error message: {}",
+                            questionACS.getRemoteId(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save question ACS.  Error message: {}", e.getMessage());
         }
     }
 
@@ -702,8 +765,15 @@ public class DataService {
                 library.setSource(rs.getString(CommonConstants.SEVEN));
                 library.setOrdinal(rs.getLong(CommonConstants.EIGHT));
                 library.setLastModified(rs.getDate(CommonConstants.NINE));
-                librarysRepository.save(library);
+                try {
+                    librarysRepository.save(library);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save library: {}.  Error message: {}",
+                            library.getRemoteId(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save library.  Error message: {}", e.getMessage());
         }
     }
 
@@ -724,8 +794,15 @@ public class DataService {
                 group.setGroupName(rs.getString(2));
                 group.setGroupAbbr(rs.getString(CommonConstants.THREE));
                 group.setLastModified(rs.getDate(CommonConstants.FOUR));
-                groupsRepository.save(group);
+                try {
+                    groupsRepository.save(group);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save group: {}.  Error message: {}",
+                            group.getGroupName(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save groups.  Error message: {}", e.getMessage());
         }
     }
 
@@ -746,8 +823,15 @@ public class DataService {
                 figureSection.setFigureSectionId(remoteId);
                 figureSection.setFigureSection(rs.getString(2));
                 figureSection.setLastModified(rs.getDate(CommonConstants.THREE));
-                figureSectionsRepository.save(figureSection);
+                try {
+                    figureSectionsRepository.save(figureSection);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save figure section: {}.  Error message: {}",
+                            figureSection.getFigureSectionId(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save figure sections.  Error message: {}", e.getMessage());
         }
     }
 
@@ -769,8 +853,15 @@ public class DataService {
                 chapter.setGroupId(rs.getLong(CommonConstants.THREE));
                 chapter.setSortBy(rs.getLong(CommonConstants.FOUR));
                 chapter.setLastModified(rs.getDate(CommonConstants.FIVE));
-                chaptersRepository.save(chapter);
+                try {
+                    chaptersRepository.save(chapter);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save chapter: {}.  Error message: {}",
+                            chapter.getChapterId(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save chapters.  Error message: {}", e.getMessage());
         }
     }
 
@@ -794,8 +885,15 @@ public class DataService {
                 acs.setDescription(rs.getString(CommonConstants.FIVE));
                 acs.setIsCompletedCode(rs.getLong(CommonConstants.SIX));
                 acs.setLastModified(rs.getDate(CommonConstants.SEVEN));
-                acsRepository.save(acs);
+                try {
+                    acsRepository.save(acs);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save ACS: {}.  Error message: {}",
+                            acs.getRemoteId(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save ACS.  Error message: {}", e.getMessage());
         }
     }
 
@@ -822,8 +920,15 @@ public class DataService {
                 binaryData.setBinType(rs.getLong(CommonConstants.SEVEN));
                 binaryData.setBinData(rs.getBytes(CommonConstants.EIGHT));
                 binaryData.setLastModified(rs.getDate(CommonConstants.NINE));
-                binaryDataRepository.save(binaryData);
+                try {
+                    binaryDataRepository.save(binaryData);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save binary data: {}.  Error message: {}",
+                            binaryData.getRemoteId(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save binary image.  Error message: {}", e.getMessage());
         }
     }
 
@@ -852,8 +957,15 @@ public class DataService {
                 question.setLastModified(rs.getDate(CommonConstants.SIX));
                 question.setExplanation(Jsoup.parse(gsDecryptor.decrypt(rs.getString(CommonConstants.SEVEN))).text());
                 question.setOldQuestionId(rs.getLong(CommonConstants.EIGHT));
-                questionRepository.save(question);
+                try {
+                    questionRepository.save(question);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save question: {}.  Error message: {}",
+                            question.getRemoteId(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save questions.  Error message: {}", e.getMessage());
         }
     }
 
@@ -877,8 +989,15 @@ public class DataService {
                 answer.setCorrect(rs.getBoolean(CommonConstants.FOUR));
                 answer.setLastModified(rs.getDate(CommonConstants.FIVE));
                 answer.setChoice(deriveChoice(answer.getChoice(), answer.getQuestionId()));
-                answerRepository.save(answer);
+                try {
+                    answerRepository.save(answer);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save answer: {}.  Error message: {}",
+                            answer.getRemoteId(), e.getMessage());
+                }
             }
+        } catch (DataException | DataIntegrityViolationException e) {
+            log.error("Unable to save answers.  Error message: {}", e.getMessage());
         }
     }
 
@@ -912,7 +1031,12 @@ public class DataService {
                 log.info("Saving {}", fileName);
                 FileUtils.writeByteArrayToFile(new File(fileName), rs.getBytes(CommonConstants.EIGHT));
                 //image.setBinImage(rs.getBytes(CommonConstants.EIGHT));
-                imageRepository.save(image);
+                try {
+                    imageRepository.save(image);
+                } catch (DataException | DataIntegrityViolationException e) {
+                    log.error("Unable to save image: {}.  Error message: {}",
+                            image.getRemoteId(), e.getMessage());
+                }
             }
         } catch (IOException | DataException | DataIntegrityViolationException e) {
             log.error("Unable to save image.  Error message: {}", e.getMessage());
