@@ -27,7 +27,7 @@
 	</parent>
 	<groupId>com.starfireaviation</groupId>
 	<artifactId>questions</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<name>questions</name>
 	<description>Questions</description>
 	<properties>

@@ -63,6 +63,7 @@ import org.apache.commons.io.FileUtils;
 //import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.hibernate.exception.DataException;
+import org.hibernate.exception.JDBCConnectionException;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -491,6 +492,8 @@ public class DataService {
                 textConst.setLastModified(rs.getDate(CommonConstants.SIX));
                 try {
                     textConstRepository.save(textConst);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(textConst.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save text const: {}.  Error message: {}",
                             textConst.getConstName(), e.getMessage());
@@ -521,6 +524,8 @@ public class DataService {
                 source.setLastModified(rs.getDate(CommonConstants.FIVE));
                 try {
                     sourcesRepository.save(source);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(source.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save source: {}.  Error message: {}",
                             source.getTitle(), e.getMessage());
@@ -552,6 +557,8 @@ public class DataService {
                 test.setLastModified(rs.getDate(CommonConstants.SIX));
                 try {
                     testsRepository.save(test);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(test.getTestId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save test: {}.  Error message: {}",
                             test.getTestName(), e.getMessage());
@@ -584,6 +591,8 @@ public class DataService {
                 subjectMatterCode.setIsLSC(rs.getLong(CommonConstants.SIX));
                 try {
                     subjectMatterCodesRepository.save(subjectMatterCode);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(subjectMatterCode.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save subject matter code: {}.  Error message: {}",
                             subjectMatterCode.getCode(), e.getMessage());
@@ -612,6 +621,8 @@ public class DataService {
                 ref.setLastModified(rs.getDate(CommonConstants.THREE));
                 try {
                     refsRepository.save(ref);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(ref.getRefId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save ref: {}.  Error message: {}",
                             ref.getRefText(), e.getMessage());
@@ -645,6 +656,8 @@ public class DataService {
                 questionTest.setIsImportant(rs.getLong(CommonConstants.SEVEN));
                 try {
                     questionTestsRepository.save(questionTest);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(questionTest.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save question test: {}.  Error message: {}",
                             questionTest.getRemoteId(), e.getMessage());
@@ -674,6 +687,8 @@ public class DataService {
                 questionReference.setRefId(rs.getLong(CommonConstants.THREE));
                 try {
                     questionReferencesRepository.save(questionReference);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(questionReference.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save question reference: {}.  Error message: {}",
                             questionReference.getRemoteId(), e.getMessage());
@@ -704,6 +719,8 @@ public class DataService {
                 questionRefImage.setAnnotation(rs.getString(CommonConstants.FOUR));
                 try {
                     questionRefImagesRepository.save(questionRefImage);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(questionRefImage.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save question ref image: {}.  Error message: {}",
                             questionRefImage.getRemoteId(), e.getMessage());
@@ -733,6 +750,8 @@ public class DataService {
                 questionACS.setAcsId(rs.getLong(CommonConstants.THREE));
                 try {
                     questionACSRepository.save(questionACS);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(questionACS.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save question ACS: {}.  Error message: {}",
                             questionACS.getRemoteId(), e.getMessage());
@@ -767,6 +786,8 @@ public class DataService {
                 library.setLastModified(rs.getDate(CommonConstants.NINE));
                 try {
                     librarysRepository.save(library);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(library.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save library: {}.  Error message: {}",
                             library.getRemoteId(), e.getMessage());
@@ -796,6 +817,8 @@ public class DataService {
                 group.setLastModified(rs.getDate(CommonConstants.FOUR));
                 try {
                     groupsRepository.save(group);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(group.getGroupId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save group: {}.  Error message: {}",
                             group.getGroupName(), e.getMessage());
@@ -825,6 +848,8 @@ public class DataService {
                 figureSection.setLastModified(rs.getDate(CommonConstants.THREE));
                 try {
                     figureSectionsRepository.save(figureSection);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(figureSection.getFigureSectionId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save figure section: {}.  Error message: {}",
                             figureSection.getFigureSectionId(), e.getMessage());
@@ -855,6 +880,8 @@ public class DataService {
                 chapter.setLastModified(rs.getDate(CommonConstants.FIVE));
                 try {
                     chaptersRepository.save(chapter);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(chapter.getChapterId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save chapter: {}.  Error message: {}",
                             chapter.getChapterId(), e.getMessage());
@@ -887,6 +914,8 @@ public class DataService {
                 acs.setLastModified(rs.getDate(CommonConstants.SEVEN));
                 try {
                     acsRepository.save(acs);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(acs.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save ACS: {}.  Error message: {}",
                             acs.getRemoteId(), e.getMessage());
@@ -922,6 +951,8 @@ public class DataService {
                 binaryData.setLastModified(rs.getDate(CommonConstants.NINE));
                 try {
                     binaryDataRepository.save(binaryData);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(binaryData.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save binary data: {}.  Error message: {}",
                             binaryData.getRemoteId(), e.getMessage());
@@ -959,6 +990,8 @@ public class DataService {
                 question.setOldQuestionId(rs.getLong(CommonConstants.EIGHT));
                 try {
                     questionRepository.save(question);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(question.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save question: {}.  Error message: {}",
                             question.getRemoteId(), e.getMessage());
@@ -991,6 +1024,8 @@ public class DataService {
                 answer.setChoice(deriveChoice(answer.getChoice(), answer.getQuestionId()));
                 try {
                     answerRepository.save(answer);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(answer.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save answer: {}.  Error message: {}",
                             answer.getRemoteId(), e.getMessage());
@@ -1033,6 +1068,8 @@ public class DataService {
                 //image.setBinImage(rs.getBytes(CommonConstants.EIGHT));
                 try {
                     imageRepository.save(image);
+                } catch (JDBCConnectionException e) {
+                    handleJDBCConnectionFailure(image.getRemoteId(), e.getMessage());
                 } catch (DataException | DataIntegrityViolationException e) {
                     log.error("Unable to save image: {}.  Error message: {}",
                             image.getRemoteId(), e.getMessage());
@@ -1107,6 +1144,22 @@ public class DataService {
                         .filter(answer -> answer.getChoice() != null)
                         .forEach(answer -> choices.remove(answer.getChoice())));
         return choices.get(0);
+    }
+
+    /**
+     * Handle JDBC connection failures by sleeping then continuing.
+     *
+     * @param id of database record being processed
+     * @param msg of failure
+     */
+    private void handleJDBCConnectionFailure(final Long id, final String msg) {
+        log.error("Encountered JDBC connection error for question test with ID: {}.  Error message: {}", id, msg);
+        try {
+            // Sleep for 5 minutes
+            Thread.sleep(CommonConstants.ONE_THOUSAND * CommonConstants.THREE_HUNDRED);
+        } catch (InterruptedException e) {
+            log.error("Unable to sleep: {}", e.getMessage());
+        }
     }
 
 }
