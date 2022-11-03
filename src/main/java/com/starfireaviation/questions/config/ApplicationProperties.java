@@ -29,31 +29,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ApplicationProperties {
 
     /**
-     * GSDecryptor enabled flag.
-     */
-    private boolean gsDecryptorEnabled;
-
-    /**
-     * SecretKey.
-     */
-    private String secretKey;
-
-    /**
-     * Init Vector.
-     */
-    private String initVector;
-
-    /**
-     * Database location.
-     */
-    private String dbLocation;
-
-    /**
-     * Content source location.
-     */
-    private String contentSourceLocation;
-
-    /**
      * Image(s) directory.
      */
     private String imageDir;

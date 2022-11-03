@@ -26,7 +26,6 @@ import com.starfireaviation.questions.model.AnswerEntity;
 import com.starfireaviation.questions.model.ImageEntity;
 import com.starfireaviation.questions.model.QuestionEntity;
 import com.starfireaviation.questions.service.AnswerService;
-import com.starfireaviation.questions.service.DataService;
 import com.starfireaviation.questions.service.ImageService;
 import com.starfireaviation.questions.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,12 +47,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/questions")
 public class QuestionController {
-
-    /**
-     * DataService.
-     */
-    @Autowired
-    private DataService dataService;
 
     /**
      * QuestionService.
@@ -92,24 +84,6 @@ public class QuestionController {
      */
     public QuestionController(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
         cache = hazelcastInstance.getMap("questions");
-    }
-
-    /**
-     * Updates all questions for all courses.
-     */
-    @PostMapping(path = "/update")
-    public void updateAllCourses() {
-        dataService.updateAllCourses();
-    }
-
-    /**
-     * Updates questions for a course.
-     *
-     * @param course course
-     */
-    @PostMapping(path = "/update/{course}")
-    public void updateCourse(@PathVariable("course") final String course) {
-        dataService.updateCourse(course);
     }
 
     /**
