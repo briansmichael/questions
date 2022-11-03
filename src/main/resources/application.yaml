@@ -1,10 +1,7 @@
 questions:
-  gs-decryptor-enabled: ${GS_DECRYPTOR_ENABLED}
-  secret-key: ${GS_SECRET_KEY}
-  init-vector: ${GS_INIT_VECTOR}
-  db-location: ${GS_DB_LOCATION}
-  content-source-location: ${CONTENT_SOURCE_LOCATION}
   image-dir: ${IMAGE_DIR}
+  connect-timeout: 3000
+  read-timeout: 30000
 
 spring:
   datasource:

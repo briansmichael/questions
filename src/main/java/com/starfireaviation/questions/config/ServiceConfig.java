@@ -22,7 +22,6 @@ import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.starfireaviation.model.CommonConstants;
-import com.starfireaviation.questions.util.GSDecryptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -53,18 +52,6 @@ public class ServiceConfig {
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
-    }
-
-    /**
-     * GroundSchool data decryptor.
-     *
-     * @param props GroundSchoolProperties
-     * @return GSDecryptor
-     */
-    @Bean
-    public GSDecryptor gsDecryptor(final ApplicationProperties props) {
-        log.info("Secret Key: {}; Init Vector: {}", props.getSecretKey(), props.getInitVector());
-        return new GSDecryptor(props.isGsDecryptorEnabled(), props.getSecretKey(), props.getInitVector());
     }
 
     /**
@@ -100,19 +87,6 @@ public class ServiceConfig {
                         new MapConfig("questions")
                                 .setTimeToLiveSeconds(CommonConstants.THREE_HUNDRED)
                                 .setMaxIdleSeconds(CommonConstants.THREE_HUNDRED)));
-    }
-
-    /**
-     * Hazelcast Lock Instance.
-     *
-     * @return HazelcastInstance
-     */
-    @Bean("lock")
-    public HazelcastInstance hazelcastLockInstance() {
-        final int ttl = CommonConstants.SIXTY * CommonConstants.SIXTY * CommonConstants.SIX;
-        return Hazelcast.newHazelcastInstance(
-                new Config().addMapConfig(
-                        new MapConfig("lock").setTimeToLiveSeconds(ttl).setMaxIdleSeconds(ttl)));
     }
 
 }
