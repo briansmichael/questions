@@ -37,6 +37,14 @@ public interface ACSRepository extends JpaRepository<ACSEntity, Long> {
     Optional<ACSEntity> findByRemoteId(Long id);
 
     /**
+     * Finds the distinct list of ACS codes for the provided list of ACS Ids.
+     *
+     * @param acsIds list of ACS Ids
+     * @return distinct list of ACS codes
+     */
+    Optional<List<String>> findDistinctCodeByRemoteIdIn(List<Long> acsIds);
+
+    /**
      * Saves an ACS.
      *
      * @param acs ACS

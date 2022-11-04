@@ -17,7 +17,10 @@
 package com.starfireaviation.questions.service;
 
 import com.starfireaviation.questions.exception.ResourceNotFoundException;
+import com.starfireaviation.questions.model.ACSRepository;
 import com.starfireaviation.questions.model.BaseEntity;
+import com.starfireaviation.questions.model.ChapterRepository;
+import com.starfireaviation.questions.model.QuestionACSRepository;
 import com.starfireaviation.questions.model.QuestionEntity;
 import com.starfireaviation.questions.model.QuestionRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -41,6 +45,24 @@ public class QuestionService {
      */
     @Autowired
     private QuestionRepository questionRepository;
+
+    /**
+     * QuestionACSRepository.
+     */
+    @Autowired
+    private QuestionACSRepository questionACSRepository;
+
+    /**
+     * ACSRepository.
+     */
+    @Autowired
+    private ACSRepository acsRepository;
+
+    /**
+     * ChapterRepository.
+     */
+    @Autowired
+    private ChapterRepository chapterRepository;
 
     /**
      * Deletes a question.
@@ -59,6 +81,35 @@ public class QuestionService {
      */
     public QuestionEntity get(final long id) {
         return questionRepository.findById(id).orElseThrow();
+    }
+
+    /**
+     * Gets the list of chapter names for a course.
+     *
+     * @param course course
+     * @return list of chapter names
+     */
+    public List<String> getChapterNamesForCourse(final String course) {
+        Optional<List<Long>> chapterIds = questionRepository.findDistinctChapterIdByCourse(course);
+        return chapterIds.map(longs -> chapterRepository.findDistinctChapterNameByChapterIdIn(longs)
+                .orElse(new ArrayList<>())).orElseGet(ArrayList::new);
+    }
+
+    /**
+     * Gets the distinct list of ACS codes for a course.
+     *
+     * @param course course
+     * @return distinct list of ACS codes
+     */
+    public List<String> getAcsCodesForCourse(final String course) {
+        Optional<List<Long>> questionIds = questionRepository.findDistinctQuestionIdByCourse(course);
+        if (questionIds.isPresent()) {
+            Optional<List<Long>> acsIds = questionACSRepository.findDistinctAcsIdByQuestionIdIn(questionIds.get());
+            if (acsIds.isPresent()) {
+                return acsRepository.findDistinctCodeByRemoteIdIn(acsIds.get()).orElseGet(ArrayList::new);
+            }
+        }
+        return new ArrayList<>();
     }
 
     /**

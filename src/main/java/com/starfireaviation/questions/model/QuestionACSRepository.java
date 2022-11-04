@@ -37,6 +37,14 @@ public interface QuestionACSRepository extends JpaRepository<QuestionACS, Long> 
     Optional<QuestionACS> findByRemoteId(Long id);
 
     /**
+     * Finds the distinct list of ACS Ids for the provided list of question Ids.
+     *
+     * @param questionIds list of question Ids
+     * @return distinct list of ACS Ids
+     */
+    Optional<List<Long>> findDistinctAcsIdByQuestionIdIn(List<Long> questionIds);
+
+    /**
      * Saves a QuestionACS.
      *
      * @param questionACS QuestionACS

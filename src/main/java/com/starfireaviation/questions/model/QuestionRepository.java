@@ -38,6 +38,22 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
     Optional<QuestionEntity> findByRemoteIdAndCourse(Long id, String course);
 
     /**
+     * Finds distinct list of chapter Ids for a course.
+     *
+     * @param course course
+     * @return distinct list of chapter Ids
+     */
+    Optional<List<Long>> findDistinctChapterIdByCourse(String course);
+
+    /**
+     * Finds distinct list of question Ids for a course.
+     *
+     * @param course course
+     * @return distinct list of question Ids
+     */
+    Optional<List<Long>> findDistinctQuestionIdByCourse(String course);
+
+    /**
      * Gets questions for ACS.
      *
      * @param acsId ACS ID

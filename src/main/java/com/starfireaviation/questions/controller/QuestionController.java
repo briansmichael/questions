@@ -106,6 +106,28 @@ public class QuestionController {
     }
 
     /**
+     * Gets the list of chapter names for a course.
+     *
+     * @param course course
+     * @return list of chapter names
+     */
+    @GetMapping(path = "/{course}/chapters")
+    public List<String> getChaptersForCourse(@PathVariable("course") final String course) {
+        return questionService.getChapterNamesForCourse(course);
+    }
+
+    /**
+     * Gets the list of ACS codes for a course.
+     *
+     * @param course course
+     * @return list of ACS codes
+     */
+    @GetMapping(path = "/{course}/acs")
+    public List<String> getACSCodesForCourse(@PathVariable("course") final String course) {
+        return questionService.getAcsCodesForCourse(course);
+    }
+
+    /**
      * Gets a question by ID.
      *
      * @param id question ID

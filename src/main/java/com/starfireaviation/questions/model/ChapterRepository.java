@@ -37,6 +37,14 @@ public interface ChapterRepository extends JpaRepository<ChapterEntity, Long> {
     Optional<ChapterEntity> findByChapterId(Long id);
 
     /**
+     * Finds the distinct list of chapter names for a list of chapter Ids.
+     *
+     * @param ids chapter Ids
+     * @return distinct list of chapter names
+     */
+    Optional<List<String>> findDistinctChapterNameByChapterIdIn(List<Long> ids);
+
+    /**
      * Saves a chapter.
      *
      * @param chapter Chapter
