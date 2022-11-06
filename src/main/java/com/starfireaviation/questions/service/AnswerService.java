@@ -20,6 +20,7 @@ import com.starfireaviation.questions.exception.ResourceNotFoundException;
 import com.starfireaviation.questions.model.AnswerEntity;
 import com.starfireaviation.questions.model.AnswerRepository;
 import com.starfireaviation.questions.model.QuestionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ import java.util.List;
 /**
  * AnswerService.
  */
+@Slf4j
 @Service
 public class AnswerService {
 
@@ -67,12 +69,11 @@ public class AnswerService {
     /**
      * Gets all answers for a question.
      *
-     * @param id Long
+     * @param remoteId Long
      * @return Answer
      */
-    public List<AnswerEntity> getAnswerForQuestionId(final long id) {
-        return answerRepository.findAllAnswerByQuestionId(questionRepository.findRemoteIdById(id)
-                .orElseThrow()).orElseThrow();
+    public List<AnswerEntity> getAnswerForQuestionId(final long remoteId) {
+        return answerRepository.findAllAnswerByQuestionId(remoteId).orElseThrow();
     }
 
 }
