@@ -19,6 +19,7 @@ package com.starfireaviation.questions.service;
 import com.starfireaviation.questions.exception.ResourceNotFoundException;
 import com.starfireaviation.questions.model.AnswerEntity;
 import com.starfireaviation.questions.model.AnswerRepository;
+import com.starfireaviation.questions.model.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,13 @@ public class AnswerService {
      */
     @Autowired
     private AnswerRepository answerRepository;
+
+
+    /**
+     * QuestionRepository.
+     */
+    @Autowired
+    private QuestionRepository questionRepository;
 
     /**
      * Deletes an answer.
@@ -63,6 +71,8 @@ public class AnswerService {
      * @return Answer
      */
     public List<AnswerEntity> getAnswerForQuestionId(final long id) {
-        return answerRepository.findAllAnswerByQuestionId(id).orElseThrow();
+        return answerRepository.findAllAnswerByQuestionId(questionRepository.findRemoteIdById(id)
+                .orElseThrow()).orElseThrow();
     }
+
 }

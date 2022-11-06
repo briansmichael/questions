@@ -20,6 +20,7 @@ import com.starfireaviation.questions.exception.ResourceNotFoundException;
 import com.starfireaviation.questions.model.ImageEntity;
 import com.starfireaviation.questions.model.ImageRepository;
 import com.starfireaviation.questions.model.QuestionRefImageRepository;
+import com.starfireaviation.questions.model.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,12 @@ public class ImageService {
      */
     @Autowired
     private ImageRepository imageRepository;
+
+    /**
+     * QuestionRepository.
+     */
+    @Autowired
+    private QuestionRepository questionRepository;
 
     /**
      * QuestionRefImageRepository.
@@ -72,7 +79,7 @@ public class ImageService {
      */
     public List<ImageEntity> getImageForQuestionId(final long id) {
         return questionRefImageRepository
-                .findByQuestionId(id)
+                .findByQuestionId(questionRepository.findRemoteIdById(id).orElseThrow())
                 .orElseThrow()
                 .stream()
                 .map(questionRefImageEntity -> imageRepository

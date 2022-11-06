@@ -108,4 +108,11 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
      */
     void delete(QuestionEntity question);
 
+    /**
+     * Gets remote ID for the provided question Id.
+     *
+     * @param questionId question ID
+     * @return remote ID
+     */
+    Optional<Long> findRemoteIdById(Long questionId);
 }
