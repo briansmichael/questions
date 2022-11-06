@@ -30,35 +30,12 @@ import java.util.Optional;
 public interface AnswerRepository extends JpaRepository<AnswerEntity, Long> {
 
     /**
-     * Gets an answer by Remote ID and Course.
-     *
-     * @param id remote answer ID
-     * @return Answer
-     */
-    Optional<AnswerEntity> findByRemoteId(Long id);
-
-    /**
      * Gets all answers for a question.
      *
      * @param questionId question ID
      * @return list of Answer
      */
-    Optional<List<AnswerEntity>> findAllAnswerByQuestionId(Long questionId);
-
-    /**
-     * Saves an answer.
-     *
-     * @param answer Answer
-     * @return Answer
-     */
-    AnswerEntity save(AnswerEntity answer);
-
-    /**
-     * Deletes an answer.
-     *
-     * @param answer Answer
-     */
-    void delete(AnswerEntity answer);
+    Optional<List<AnswerEntity>> findByQuestionId(Long questionId);
 
     /**
      * Gets an answer.
@@ -66,6 +43,6 @@ public interface AnswerRepository extends JpaRepository<AnswerEntity, Long> {
      * @param id Long
      * @return Answer
      */
-    Optional<AnswerEntity> findById(long id);
+    Optional<AnswerEntity> findByAnswerId(Long id);
 
 }

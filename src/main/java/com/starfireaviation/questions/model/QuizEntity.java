@@ -25,6 +25,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -34,12 +35,18 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "QUIZ")
-public class QuizEntity extends BaseEntity {
+public class QuizEntity {
 
     /**
      * Default SerialVersionUID.
      */
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Id.
+     */
+    @Id
+    private Long id;
 
     /**
      * Title.

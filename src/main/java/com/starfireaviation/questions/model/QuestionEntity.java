@@ -21,6 +21,7 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -30,17 +31,13 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "QUESTIONS")
-public class QuestionEntity extends BaseEntity {
+public class QuestionEntity {
 
     /**
      * Remote Question ID.
      */
-    private Long remoteId;
-
-    /**
-     * Old Question ID.
-     */
-    private Long oldQuestionId;
+    @Id
+    private Long questionId;
 
     /**
      * Question Text.
@@ -59,37 +56,14 @@ public class QuestionEntity extends BaseEntity {
     private Long smcId;
 
     /**
-     * ACS ID.
-     */
-    private Long acsId;
-
-    /**
      * Source.
      */
     private String source;
 
     /**
-     * Course.
-     */
-    @Column(name = "course")
-    private String course;
-
-    /**
      * Last Modified.
      */
     private Date lastModified;
-
-    /**
-     * Unit.
-     */
-    @Column(name = "unit")
-    private String unit;
-
-    /**
-     * SubUnit.
-     */
-    @Column(name = "sub_unit")
-    private String subUnit;
 
     /**
      * Explanation.
@@ -98,9 +72,13 @@ public class QuestionEntity extends BaseEntity {
     private String explanation;
 
     /**
+     * Old Question ID.
+     */
+    private Long oldQuestionId;
+
+    /**
      * LearningStatementCode.
      */
-    @Column(name = "learning_statement_code", length = CommonConstants.TEN)
-    private String learningStatementCode;
+    private Long lscId;
 
 }

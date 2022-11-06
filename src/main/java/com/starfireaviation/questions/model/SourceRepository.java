@@ -19,7 +19,6 @@ package com.starfireaviation.questions.model;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -34,36 +33,6 @@ public interface SourceRepository extends JpaRepository<SourceEntity, Long> {
      * @param id remote ID
      * @return Source
      */
-    Optional<SourceEntity> findByRemoteId(Long id);
-
-    /**
-     * Saves a Source.
-     *
-     * @param source Source
-     * @return Source
-     */
-    SourceEntity save(SourceEntity source);
-
-    /**
-     * Gets all Source.
-     *
-     * @return list of Source
-     */
-    List<SourceEntity> findAll();
-
-    /**
-     * Deletes a Source.
-     *
-     * @param source Source
-     */
-    void delete(SourceEntity source);
-
-    /**
-     * Gets a Source.
-     *
-     * @param id Long
-     * @return Source
-     */
-    SourceEntity findById(long id);
+    Optional<SourceEntity> findById(Long id);
 
 }

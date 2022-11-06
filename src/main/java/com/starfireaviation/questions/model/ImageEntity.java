@@ -18,9 +18,8 @@ package com.starfireaviation.questions.model;
 
 import lombok.Data;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -30,12 +29,13 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "IMAGES")
-public class ImageEntity extends BaseEntity {
+public class ImageEntity {
 
     /**
-     * Remote Image ID.
+     * Image ID.
      */
-    private Long remoteId;
+    @Id
+    private Long id;
 
     /**
      * PicType.
@@ -66,13 +66,6 @@ public class ImageEntity extends BaseEntity {
      * FileName.
      */
     private String fileName;
-
-    /**
-     * Binary Image.
-     */
-    @Lob
-    @Column(name = "binImage", columnDefinition = "LONGBLOB")
-    private byte[] binImage;
 
     /**
      * Figure Section ID.

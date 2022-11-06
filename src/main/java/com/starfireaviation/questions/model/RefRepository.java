@@ -19,7 +19,6 @@ package com.starfireaviation.questions.model;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -35,35 +34,5 @@ public interface RefRepository extends JpaRepository<RefEntity, Long> {
      * @return Ref
      */
     Optional<RefEntity> findByRefId(Long id);
-
-    /**
-     * Saves a Ref.
-     *
-     * @param ref Ref
-     * @return Ref
-     */
-    RefEntity save(RefEntity ref);
-
-    /**
-     * Gets all Ref.
-     *
-     * @return list of Ref
-     */
-    List<RefEntity> findAll();
-
-    /**
-     * Deletes a Ref.
-     *
-     * @param ref Ref
-     */
-    void delete(RefEntity ref);
-
-    /**
-     * Gets a Ref.
-     *
-     * @param id Long
-     * @return Ref
-     */
-    RefEntity findById(long id);
 
 }

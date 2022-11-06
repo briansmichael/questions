@@ -19,6 +19,7 @@ package com.starfireaviation.questions.model;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -28,11 +29,12 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "FIGURE_SECTIONS")
-public class FigureSectionEntity extends BaseEntity {
+public class FigureSectionEntity {
 
     /**
      * Figure Section ID.
      */
+    @Id
     private Long figureSectionId;
 
     /**

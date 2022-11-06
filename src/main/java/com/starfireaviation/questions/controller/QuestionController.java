@@ -89,20 +89,16 @@ public class QuestionController {
     /**
      * Gets list of question IDs matching search criteria.
      *
-     * @param course optional course
-     * @param acsId optional ACS ID
+     * @param group optional group abbreviation
+     * @param acsCode optional ACS code
      * @param learningStatementCode optional learning statement code
-     * @param unit optional unit
-     * @param subUnit optional sub unit
      * @return list of question ids
      */
     @GetMapping
-    public List<Long> getQuestions(@RequestParam(value = "course", required = false) final String course,
-                                   @RequestParam(value = "acs", required = false) final Long acsId,
-                                   @RequestParam(value = "lsc", required = false) final String learningStatementCode,
-                                   @RequestParam(value = "unit", required = false) final String unit,
-                                   @RequestParam(value = "subunit", required = false) final String subUnit) {
-        return questionService.getQuestions(course, acsId, learningStatementCode, unit, subUnit);
+    public List<Long> getQuestions(@RequestParam(value = "group", required = false) final String group,
+                                   @RequestParam(value = "acs", required = false) final String acsCode,
+                                   @RequestParam(value = "lsc", required = false) final String learningStatementCode) {
+        return questionService.getQuestions(group, acsCode, learningStatementCode);
     }
 
     /**
@@ -139,8 +135,6 @@ public class QuestionController {
             return cache.get(id);
         }
         final Question question = map(questionService.get(id));
-        question.setAnswers(getQuestionAnswers(question.getRemoteId()));
-        question.setImages(getQuestionImages(question.getRemoteId()));
         cache.put(id, question);
         return question;
     }
@@ -189,14 +183,12 @@ public class QuestionController {
      */
     private Answer map(final AnswerEntity answerEntity) {
         final Answer answer = new Answer();
-        answer.setId(answerEntity.getId());
+        answer.setId(answerEntity.getAnswerId());
         answer.setLastModified(answerEntity.getLastModified());
-        answer.setRemoteId(answerEntity.getRemoteId());
         answer.setQuestionId(answerEntity.getQuestionId());
         answer.setChoice(answerEntity.getChoice());
         answer.setCorrect(answerEntity.getCorrect());
         answer.setText(answerEntity.getText());
-        answer.setDiscussion(answerEntity.getDiscussion());
         return answer;
     }
 
@@ -209,7 +201,6 @@ public class QuestionController {
     private Image map(final ImageEntity imageEntity) {
         final Image image = new Image();
         image.setId(imageEntity.getId());
-        image.setRemoteId(imageEntity.getRemoteId());
         final String fileName = applicationProperties.getImageDir() + "/" + imageEntity.getFileName();
         try {
             image.setBinImage(FileUtils.readFileToByteArray(new File(fileName)));
@@ -238,20 +229,18 @@ public class QuestionController {
      */
     private Question map(final QuestionEntity questionEntity) {
         final Question question = new Question();
-        question.setId(questionEntity.getId());
+        question.setId(questionEntity.getQuestionId());
         question.setLastModified(questionEntity.getLastModified());
         question.setOldQuestionId(questionEntity.getOldQuestionId());
-        question.setRemoteId(questionEntity.getRemoteId());
-        question.setCourse(questionEntity.getCourse());
-        question.setAcsId(questionEntity.getAcsId());
         question.setChapterId(questionEntity.getChapterId());
         question.setExplanation(questionEntity.getExplanation());
-        question.setLearningStatementCode(questionEntity.getLearningStatementCode());
         question.setSmcId(questionEntity.getSmcId());
         question.setSource(questionEntity.getSource());
-        question.setSubUnit(questionEntity.getSubUnit());
         question.setText(questionEntity.getText());
-        question.setUnit(questionEntity.getUnit());
+        question.setAcsCode(questionService.getACSCodeForQuestionId(question.getId()));
+        question.setAnswers(getQuestionAnswers(question.getRemoteId()));
+        question.setImages(getQuestionImages(question.getRemoteId()));
+        question.setLearningStatementCode(questionService.getLearningStatementCode(questionEntity.getLscId()));
         return question;
     }
 

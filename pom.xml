@@ -34,7 +34,7 @@
 		<java.version>11</java.version>
 		<sqlite.version>3.39.3.0</sqlite.version>
 		<cucumber.version>7.8.1</cucumber.version>
-		<sa.model.version>0.0.9</sa.model.version>
+		<sa.model.version>0.0.12</sa.model.version>
 		<hazelcast.version>5.2.0</hazelcast.version>
 		<springdoc.version>1.6.11</springdoc.version>
 		<bouncycastle.version>1.70</bouncycastle.version>

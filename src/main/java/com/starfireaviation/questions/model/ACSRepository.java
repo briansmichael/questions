@@ -29,49 +29,19 @@ import java.util.Optional;
 public interface ACSRepository extends JpaRepository<ACSEntity, Long> {
 
     /**
-     * Gets an ACS by Remote ID.
+     * Gets ACS by group ID.
      *
-     * @param id remote ID
-     * @return ACS
-     */
-    Optional<ACSEntity> findByRemoteId(Long id);
-
-    /**
-     * Finds the distinct list of ACS codes for the provided list of ACS Ids.
-     *
-     * @param acsIds list of ACS Ids
-     * @return distinct list of ACS codes
-     */
-    Optional<List<String>> findDistinctCodeByRemoteIdIn(List<Long> acsIds);
-
-    /**
-     * Saves an ACS.
-     *
-     * @param acs ACS
-     * @return ACS
-     */
-    ACSEntity save(ACSEntity acs);
-
-    /**
-     * Gets all ACS.
-     *
+     * @param groupId group ID
      * @return list of ACS
      */
-    List<ACSEntity> findAll();
+    Optional<List<ACSEntity>> findByGroupId(Long groupId);
 
     /**
-     * Deletes an ACS.
+     * Gets ACS by code.
      *
-     * @param acs ACS
+     * @param code code
+     * @return list of ACS
      */
-    void delete(ACSEntity acs);
-
-    /**
-     * Gets an ACS.
-     *
-     * @param id Long
-     * @return ACS
-     */
-    ACSEntity findById(long id);
+    Optional<List<ACSEntity>> findByCode(String code);
 
 }

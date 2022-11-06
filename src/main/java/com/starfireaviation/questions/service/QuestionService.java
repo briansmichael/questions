@@ -16,13 +16,17 @@
 
 package com.starfireaviation.questions.service;
 
-import com.starfireaviation.questions.exception.ResourceNotFoundException;
+import com.starfireaviation.questions.model.ACSEntity;
 import com.starfireaviation.questions.model.ACSRepository;
-import com.starfireaviation.questions.model.BaseEntity;
+import com.starfireaviation.questions.model.ChapterEntity;
 import com.starfireaviation.questions.model.ChapterRepository;
+import com.starfireaviation.questions.model.GroupEntity;
+import com.starfireaviation.questions.model.GroupRepository;
 import com.starfireaviation.questions.model.QuestionACSRepository;
 import com.starfireaviation.questions.model.QuestionEntity;
 import com.starfireaviation.questions.model.QuestionRepository;
+import com.starfireaviation.questions.model.SubjectMatterCodeEntity;
+import com.starfireaviation.questions.model.SubjectMatterCodeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,13 +69,16 @@ public class QuestionService {
     private ChapterRepository chapterRepository;
 
     /**
-     * Deletes a question.
-     *
-     * @param id id
+     * SubjectMatterCodeRepository.
      */
-    public void delete(final long id) throws ResourceNotFoundException {
-        questionRepository.delete(get(id));
-    }
+    @Autowired
+    private SubjectMatterCodeRepository smcRepository;
+
+    /**
+     * GroupRepository.
+     */
+    @Autowired
+    private GroupRepository groupRepository;
 
     /**
      * Gets a question by ID.
@@ -90,9 +97,17 @@ public class QuestionService {
      * @return list of chapter names
      */
     public List<String> getChapterNamesForCourse(final String course) {
-        Optional<List<Long>> chapterIds = questionRepository.findDistinctChapterIdByCourse(course);
-        return chapterIds.map(longs -> chapterRepository.findDistinctChapterNameByChapterIdIn(longs)
-                .orElse(new ArrayList<>())).orElseGet(ArrayList::new);
+        final List<String> chapterNames = new ArrayList<>();
+        final Optional<List<GroupEntity>> groupEntityOpt = groupRepository.findByGroupAbbr(course);
+        groupEntityOpt.ifPresent(groupEntities -> groupEntities.stream().distinct().forEach(groupEntity -> {
+            final Optional<List<ChapterEntity>> chaptersOpt = chapterRepository.findByGroupId(groupEntity.getGroupId());
+            chaptersOpt.ifPresent(chapterEntities -> chapterNames.addAll(
+                    chapterEntities.stream()
+                            .distinct()
+                            .map(ChapterEntity::getChapterName)
+                            .collect(Collectors.toList())));
+        }));
+        return chapterNames.stream().distinct().collect(Collectors.toList());
     }
 
     /**
@@ -102,102 +117,81 @@ public class QuestionService {
      * @return distinct list of ACS codes
      */
     public List<String> getAcsCodesForCourse(final String course) {
-        Optional<List<Long>> questionIds = questionRepository.findDistinctQuestionIdByCourse(course);
-        if (questionIds.isPresent()) {
-            Optional<List<Long>> acsIds = questionACSRepository.findDistinctAcsIdByQuestionIdIn(questionIds.get());
-            if (acsIds.isPresent()) {
-                return acsRepository.findDistinctCodeByRemoteIdIn(acsIds.get()).orElseGet(ArrayList::new);
-            }
-        }
-        return new ArrayList<>();
+        final List<String> acsCodes = new ArrayList<>();
+        final Optional<List<GroupEntity>> groupEntityOpt = groupRepository.findByGroupAbbr(course);
+        groupEntityOpt.ifPresent(groupEntities -> groupEntities.stream().distinct().forEach(groupEntity -> {
+            final Optional<List<ACSEntity>> acsEntityOpt = acsRepository.findByGroupId(groupEntity.getGroupId());
+            acsEntityOpt.ifPresent(acsEntities -> acsCodes.addAll(
+                    acsEntities.stream().distinct().map(ACSEntity::getCode).collect(Collectors.toList())));
+        }));
+        return acsCodes.stream().distinct().collect(Collectors.toList());
+    }
+
+    /**
+     * Gets ACS Code for a question ID.
+     *
+     * @param questionId question ID
+     * @return ACS code
+     */
+    public String getACSCodeForQuestionId(final Long questionId) {
+        // TODO
+        return null;
     }
 
     /**
      * Gets a list of question IDs for provided search criteria.
      *
-     * @param course optional course
-     * @param acsId optional ACS ID
+     * @param groupAbbr optional group abbreviation
+     * @param acsCode optional ACS code
      * @param learningStatementCode optional learning statement code
-     * @param unit optional unit
-     * @param subUnit option subUnit
      * @return list of question IDs
      */
-    public List<Long> getQuestions(final String course,
-                                   final Long acsId,
-                                   final String learningStatementCode,
-                                   final String unit,
-                                   final String subUnit) {
+    public List<Long> getQuestions(final String groupAbbr,
+                                   final String acsCode,
+                                   final String learningStatementCode) {
         final List<Long> questionIds = new ArrayList<>();
-        if (course != null) {
-            log.info("course provided is {}", course);
-            questionIds.addAll(questionRepository
-                    .findByCourse(course)
-                    .orElseThrow()
-                    .stream()
-                    .map(BaseEntity::getId)
-                    .collect(Collectors.toList()));
-            log.info("(course) questionIds size is: {}", questionIds.size());
+        if (groupAbbr != null) {
+            groupRepository.findByGroupAbbr(groupAbbr)
+                    .ifPresent(groupEntities -> groupEntities.forEach(groupEntity ->
+                            acsRepository.findByGroupId(groupEntity.getGroupId()).ifPresent(acsEntities ->
+                    acsEntities.forEach(acsEntity -> questionACSRepository.findByAcsId(acsEntity.getId())
+                            .ifPresent(acs -> acs.forEach(questionACS ->
+                                    questionIds.add(questionACS.getQuestionId())))))));
         }
-        if (acsId != null) {
-            log.info("acsId provided is {}", acsId);
-            final List<Long> list = questionRepository
-                    .findByAcsId(acsId)
-                    .orElseThrow()
-                    .stream()
-                    .map(BaseEntity::getId)
-                    .collect(Collectors.toList());
+        if (acsCode != null) {
+            final List<Long> list = new ArrayList<>();
+            acsRepository.findByCode(acsCode).ifPresent(acsEntities -> acsEntities.forEach(acsEntity ->
+                    questionACSRepository.findByAcsId(acsEntity.getId()).ifPresent(acs -> acs.forEach(questionACS ->
+                            list.add(questionACS.getQuestionId())))));
             if (CollectionUtils.isEmpty(questionIds)) {
                 questionIds.addAll(list);
             } else {
                 questionIds.retainAll(list);
             }
-            log.info("(acsId) questionIds size is: {}", questionIds.size());
         }
         if (learningStatementCode != null) {
-            log.info("learningStatementCode provided is {}", learningStatementCode);
-            final List<Long> list = questionRepository
-                    .findByLearningStatementCode(learningStatementCode)
-                    .orElseThrow()
-                    .stream()
-                    .map(BaseEntity::getId)
-                    .collect(Collectors.toList());
+            final List<Long> list = new ArrayList<>();
+            smcRepository.findByCode(learningStatementCode).ifPresent(subjectMatterCodeEntities ->
+                    subjectMatterCodeEntities.forEach(smc -> questionRepository.findByLscId(smc.getId())
+                            .ifPresent(questionEntities -> questionEntities.forEach(question ->
+                                    list.add(question.getQuestionId())))));
             if (CollectionUtils.isEmpty(questionIds)) {
                 questionIds.addAll(list);
             } else {
                 questionIds.retainAll(list);
             }
-            log.info("(learningStatementCode) questionIds size is: {}", questionIds.size());
         }
-        if (unit != null) {
-            log.info("unit provided is {}", unit);
-            final List<Long> list = questionRepository
-                    .findByUnit(unit)
-                    .orElseThrow()
-                    .stream()
-                    .map(BaseEntity::getId)
-                    .collect(Collectors.toList());
-            if (CollectionUtils.isEmpty(questionIds)) {
-                questionIds.addAll(list);
-            } else {
-                questionIds.retainAll(list);
-            }
-            log.info("(unit) questionIds size is: {}", questionIds.size());
-        }
-        if (subUnit != null) {
-            log.info("subUnit provided is {}", subUnit);
-            final List<Long> list = questionRepository
-                    .findBySubUnit(subUnit)
-                    .orElseThrow()
-                    .stream()
-                    .map(BaseEntity::getId)
-                    .collect(Collectors.toList());
-            if (CollectionUtils.isEmpty(questionIds)) {
-                questionIds.addAll(list);
-            } else {
-                questionIds.retainAll(list);
-            }
-            log.info("(subUnit) questionIds size is: {}", questionIds.size());
-        }
-        return questionIds;
+        return questionIds.stream().distinct().collect(Collectors.toList());
+    }
+
+    /**
+     * Gets LearningStatementCode.
+     *
+     * @param lscId learning statement code ID
+     * @return code
+     */
+    public String getLearningStatementCode(final Long lscId) {
+        final Optional<SubjectMatterCodeEntity> smcOpt = smcRepository.findById(lscId);
+        return smcOpt.map(SubjectMatterCodeEntity::getCode).orElse(null);
     }
 }

@@ -21,6 +21,7 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -30,12 +31,13 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "ANSWERS")
-public class AnswerEntity extends BaseEntity {
+public class AnswerEntity {
 
     /**
-     * Remote Answer ID.
+     * AnswerId.
      */
-    private Long remoteId;
+    @Id
+    private Long answerId;
 
     /**
      * Answer Text.
@@ -57,18 +59,12 @@ public class AnswerEntity extends BaseEntity {
     /**
      * Choice.
      */
-    @Column(name = "choice", length = CommonConstants.FIVE)
+    @Column(name = "choice", nullable = false, length = CommonConstants.FIVE)
     private String choice;
 
     /**
      * Last Modified.
      */
     private Date lastModified;
-
-    /**
-     * Discussion.
-     */
-    @Column(name = "discussion", length = CommonConstants.TWO_THOUSAND)
-    private String discussion;
 
 }

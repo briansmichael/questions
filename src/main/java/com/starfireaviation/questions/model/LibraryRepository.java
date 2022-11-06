@@ -19,44 +19,13 @@ package com.starfireaviation.questions.model;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
- * LibrarysRepository.
+ * LibraryRepository.
  */
 @Repository
 public interface LibraryRepository extends JpaRepository<LibraryEntity, Long> {
-
-    /**
-     * Gets a Library by remote ID.
-     *
-     * @param id remote ID
-     * @return Library
-     */
-    Optional<LibraryEntity> findByRemoteId(Long id);
-
-    /**
-     * Saves a Library.
-     *
-     * @param library Library
-     * @return Library
-     */
-    LibraryEntity save(LibraryEntity library);
-
-    /**
-     * Gets all Librarys.
-     *
-     * @return list of Librarys
-     */
-    List<LibraryEntity> findAll();
-
-    /**
-     * Deletes a Library.
-     *
-     * @param library Library
-     */
-    void delete(LibraryEntity library);
 
     /**
      * Gets a Library.
@@ -64,6 +33,6 @@ public interface LibraryRepository extends JpaRepository<LibraryEntity, Long> {
      * @param id Long
      * @return Library
      */
-    LibraryEntity findById(long id);
+    Optional<LibraryEntity> findById(long id);
 
 }

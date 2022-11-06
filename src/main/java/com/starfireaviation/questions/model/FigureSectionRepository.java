@@ -19,7 +19,6 @@ package com.starfireaviation.questions.model;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -35,35 +34,5 @@ public interface FigureSectionRepository extends JpaRepository<FigureSectionEnti
      * @return FigureSection
      */
     Optional<FigureSectionEntity> findByFigureSectionId(Long id);
-
-    /**
-     * Saves a figure section.
-     *
-     * @param figureSection FigureSection
-     * @return FigureSection
-     */
-    FigureSectionEntity save(FigureSectionEntity figureSection);
-
-    /**
-     * Gets all FigureSections.
-     *
-     * @return list of FigureSections
-     */
-    List<FigureSectionEntity> findAll();
-
-    /**
-     * Deletes a FigureSection.
-     *
-     * @param figureSection FigureSection
-     */
-    void delete(FigureSectionEntity figureSection);
-
-    /**
-     * Gets a FigureSection.
-     *
-     * @param id Long
-     * @return FigureSection
-     */
-    FigureSectionEntity findById(long id);
 
 }

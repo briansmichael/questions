@@ -29,41 +29,27 @@ import java.util.Optional;
 public interface TextConstRepository extends JpaRepository<TextConstEntity, Long> {
 
     /**
-     * Gets a TextConst by remote ID.
+     * Gets a TextConst by ID.
      *
      * @param id remote ID
      * @return TextConst
      */
-    Optional<TextConstEntity> findByRemoteId(Long id);
+    Optional<TextConstEntity> findById(Long id);
 
     /**
-     * Saves a TextConst.
+     * Gets a TextConst by group ID.
      *
-     * @param textConst TextConst
+     * @param id group ID
      * @return TextConst
      */
-    TextConstEntity save(TextConstEntity textConst);
+    Optional<List<TextConstEntity>> findByGroupId(Long id);
 
     /**
-     * Gets all TextConst.
+     * Gets a TextConst by test ID.
      *
-     * @return list of TextConst
-     */
-    List<TextConstEntity> findAll();
-
-    /**
-     * Deletes a TextConst.
-     *
-     * @param textConst TextConst
-     */
-    void delete(TextConstEntity textConst);
-
-    /**
-     * Gets a TextConst.
-     *
-     * @param id Long
+     * @param id test ID
      * @return TextConst
      */
-    TextConstEntity findById(long id);
+    Optional<List<TextConstEntity>> findByTestId(Long id);
 
 }
