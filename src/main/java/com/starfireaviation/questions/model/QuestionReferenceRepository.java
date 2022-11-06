@@ -29,41 +29,27 @@ import java.util.Optional;
 public interface QuestionReferenceRepository extends JpaRepository<QuestionReferenceEntity, Long> {
 
     /**
-     * Gets a QuestionReference by remote ID.
-     *
-     * @param id remote ID
-     * @return QuestionReference
-     */
-    Optional<QuestionReferenceEntity> findByRemoteId(Long id);
-
-    /**
-     * Saves a QuestionReference.
-     *
-     * @param questionReference QuestionReference
-     * @return QuestionReference
-     */
-    QuestionReferenceEntity save(QuestionReferenceEntity questionReference);
-
-    /**
-     * Gets all QuestionReference.
-     *
-     * @return list of QuestionReference
-     */
-    List<QuestionReferenceEntity> findAll();
-
-    /**
-     * Deletes a QuestionReference.
-     *
-     * @param questionReference QuestionReference
-     */
-    void delete(QuestionReferenceEntity questionReference);
-
-    /**
      * Gets a QuestionReference.
      *
      * @param id Long
      * @return QuestionReference
      */
-    QuestionReferenceEntity findById(long id);
+    Optional<QuestionReferenceEntity> findById(Long id);
+
+    /**
+     * Gets QuestionReference by question ID.
+     *
+     * @param questionId question ID
+     * @return list of Question Reference
+     */
+    Optional<List<QuestionReferenceEntity>> findByQuestionId(Long questionId);
+
+    /**
+     * Gets QuestionReference by ref ID.
+     *
+     * @param refId ref ID
+     * @return list of Question Reference
+     */
+    Optional<List<QuestionReferenceEntity>> findByRefId(Long refId);
 
 }

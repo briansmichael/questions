@@ -19,7 +19,6 @@ package com.starfireaviation.questions.model;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,36 +26,6 @@ import java.util.Optional;
  */
 @Repository
 public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
-
-    /**
-     * Gets an image by Remote ID.
-     *
-     * @param id remote ID
-     * @return Answer
-     */
-    Optional<ImageEntity> findByRemoteId(Long id);
-
-    /**
-     * Saves an image.
-     *
-     * @param image Image
-     * @return Image
-     */
-    ImageEntity save(ImageEntity image);
-
-    /**
-     * Gets all images.
-     *
-     * @return list of Images
-     */
-    List<ImageEntity> findAll();
-
-    /**
-     * Deletes an image.
-     *
-     * @param image Image
-     */
-    void delete(ImageEntity image);
 
     /**
      * Gets an image.

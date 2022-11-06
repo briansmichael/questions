@@ -19,6 +19,7 @@ package com.starfireaviation.questions.model;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -28,11 +29,12 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "REFS")
-public class RefEntity extends BaseEntity {
+public class RefEntity {
 
     /**
      * Ref ID.
      */
+    @Id
     private Long refId;
 
     /**

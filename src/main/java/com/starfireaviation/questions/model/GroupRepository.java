@@ -37,33 +37,11 @@ public interface GroupRepository extends JpaRepository<GroupEntity, Long> {
     Optional<GroupEntity> findByGroupId(Long id);
 
     /**
-     * Saves a group.
+     * Gets a group by abbr.
      *
-     * @param group Group
-     * @return Group
+     * @param groupAbbr group abbr
+     * @return GroupEntity
      */
-    GroupEntity save(GroupEntity group);
-
-    /**
-     * Gets all Groups.
-     *
-     * @return list of Groups
-     */
-    List<GroupEntity> findAll();
-
-    /**
-     * Deletes a Group.
-     *
-     * @param group Group
-     */
-    void delete(GroupEntity group);
-
-    /**
-     * Gets a Group.
-     *
-     * @param id Long
-     * @return Group
-     */
-    GroupEntity findById(long id);
+    Optional<List<GroupEntity>> findByGroupAbbr(String groupAbbr);
 
 }

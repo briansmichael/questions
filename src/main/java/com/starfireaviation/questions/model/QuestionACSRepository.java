@@ -34,44 +34,22 @@ public interface QuestionACSRepository extends JpaRepository<QuestionACS, Long> 
      * @param id remote ID
      * @return QuestionACS
      */
-    Optional<QuestionACS> findByRemoteId(Long id);
+    Optional<QuestionACS> findById(Long id);
 
     /**
-     * Finds the distinct list of ACS Ids for the provided list of question Ids.
+     * Gets a QuestionACS by remote ID.
      *
-     * @param questionIds list of question Ids
-     * @return distinct list of ACS Ids
-     */
-    Optional<List<Long>> findDistinctAcsIdByQuestionIdIn(List<Long> questionIds);
-
-    /**
-     * Saves a QuestionACS.
-     *
-     * @param questionACS QuestionACS
+     * @param id ACS ID
      * @return QuestionACS
      */
-    QuestionACS save(QuestionACS questionACS);
+    Optional<List<QuestionACS>> findByAcsId(Long id);
 
     /**
-     * Gets all QuestionACS.
+     * Gets a QuestionACS by question ID.
      *
-     * @return list of QuestionACS
-     */
-    List<QuestionACS> findAll();
-
-    /**
-     * Deletes a QuestionACS.
-     *
-     * @param questionACS QuestionACS
-     */
-    void delete(QuestionACS questionACS);
-
-    /**
-     * Gets a QuestionACS.
-     *
-     * @param id Long
+     * @param id Question ID
      * @return QuestionACS
      */
-    QuestionACS findById(long id);
+    Optional<List<QuestionACS>> findByQuestionId(Long id);
 
 }

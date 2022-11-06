@@ -19,6 +19,7 @@ package com.starfireaviation.questions.model;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -27,12 +28,13 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "QUESTIONS_TESTS")
-public class QuestionTestEntity extends BaseEntity {
+public class QuestionTestEntity {
 
     /**
-     * Remote ID.
+     * ID.
      */
-    private Long remoteId;
+    @Id
+    private Long id;
 
     /**
      * Question ID.

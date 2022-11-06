@@ -21,21 +21,23 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * Ref.
+ * TextConst.
  */
 @Data
 @Entity
 @Table(name = "TEXT_CONST")
-public class TextConstEntity extends BaseEntity {
+public class TextConstEntity {
 
     /**
-     * Remote ID.
+     * ID.
      */
-    private Long remoteId;
+    @Id
+    private Long id;
 
     /**
      * ConstName.

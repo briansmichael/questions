@@ -18,24 +18,24 @@ package com.starfireaviation.questions.model;
 
 import lombok.Data;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * ACS.
+ * BinaryData.
  */
 @Data
 @Entity
-@Table(name = "ACS")
-public class BinaryDataEntity extends BaseEntity {
+@Table(name = "BINARY_DATA")
+public class BinaryDataEntity {
 
     /**
      * Remote ID.
      */
-    private Long remoteId;
+    @Id
+    private Long id;
 
     /**
      * Category.
@@ -66,13 +66,6 @@ public class BinaryDataEntity extends BaseEntity {
      * Bin Type.
      */
     private Long binType;
-
-    /**
-     * Binary Data.
-     */
-    @Lob
-    @Column(name = "bin_data", columnDefinition = "LONGBLOB")
-    private byte[] binData;
 
     /**
      * Last Modified.

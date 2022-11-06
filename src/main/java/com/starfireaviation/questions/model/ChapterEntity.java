@@ -19,6 +19,7 @@ package com.starfireaviation.questions.model;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -28,11 +29,12 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "CHAPTERS")
-public class ChapterEntity extends BaseEntity {
+public class ChapterEntity {
 
     /**
      * Chapter ID.
      */
+    @Id
     private Long chapterId;
 
     /**

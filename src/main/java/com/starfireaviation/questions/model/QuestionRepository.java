@@ -29,83 +29,35 @@ import java.util.Optional;
 public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> {
 
     /**
-     * Gets a question by remote ID.
+     * Gets question by question ID.
      *
-     * @param id remote question ID
-     * @param course course
+     * @param questionId question ID
      * @return Question
      */
-    Optional<QuestionEntity> findByRemoteIdAndCourse(Long id, String course);
+    Optional<QuestionEntity> findByQuestionId(Long questionId);
 
     /**
-     * Finds distinct list of chapter Ids for a course.
+     * Gets questions by chapter ID.
      *
-     * @param course course
-     * @return distinct list of chapter Ids
+     * @param chapterId chapter ID
+     * @return list of Questions
      */
-    Optional<List<Long>> findDistinctChapterIdByCourse(String course);
+    Optional<List<QuestionEntity>> findByChapterId(Long chapterId);
 
     /**
-     * Finds distinct list of question Ids for a course.
+     * Gets questions by subject matter code.
      *
-     * @param course course
-     * @return distinct list of question Ids
-     */
-    Optional<List<Long>> findDistinctQuestionIdByCourse(String course);
-
-    /**
-     * Gets questions for ACS.
-     *
-     * @param acsId ACS ID
+     * @param smcId subject matter code ID
      * @return list of questions
      */
-    Optional<List<QuestionEntity>> findByAcsId(Long acsId);
+    Optional<List<QuestionEntity>> findBySmcId(Long smcId);
 
     /**
      * Gets questions for Learning Statement Code.
      *
-     * @param learningStatementCode LSC
+     * @param lscId Learning Statement Code ID
      * @return list of questions
      */
-    Optional<List<QuestionEntity>> findByLearningStatementCode(String learningStatementCode);
-
-    /**
-     * Gets questions for Unit.
-     *
-     * @param unit unit
-     * @return list of questions
-     */
-    Optional<List<QuestionEntity>> findByUnit(String unit);
-
-    /**
-     * Gets questions for Sub Unit.
-     *
-     * @param subUnit sub-unit
-     * @return list of questions
-     */
-    Optional<List<QuestionEntity>> findBySubUnit(String subUnit);
-
-    /**
-     * Gets a question by course.
-     *
-     * @param course Course
-     * @return Question
-     */
-    Optional<List<QuestionEntity>> findByCourse(String course);
-
-    /**
-     * Saves a question.
-     *
-     * @param question Question
-     * @return Question
-     */
-    QuestionEntity save(QuestionEntity question);
-
-    /**
-     * Deletes a question.
-     *
-     * @param question Question
-     */
-    void delete(QuestionEntity question);
+    Optional<List<QuestionEntity>> findByLscId(Long lscId);
 
 }

@@ -29,36 +29,6 @@ import java.util.Optional;
 public interface QuestionRefImageRepository extends JpaRepository<QuestionRefImageEntity, Long> {
 
     /**
-     * Gets a QuestionRefImages by remote ID.
-     *
-     * @param id remote ID
-     * @return QuestionRefImages
-     */
-    Optional<QuestionRefImageEntity> findByRemoteId(Long id);
-
-    /**
-     * Saves a QuestionRefImages.
-     *
-     * @param questionRefImages QuestionRefImages
-     * @return QuestionRefImages
-     */
-    QuestionRefImageEntity save(QuestionRefImageEntity questionRefImages);
-
-    /**
-     * Gets all QuestionRefImages.
-     *
-     * @return list of QuestionRefImages
-     */
-    List<QuestionRefImageEntity> findAll();
-
-    /**
-     * Deletes a QuestionRefImage.
-     *
-     * @param questionRefImages QuestionRefImages
-     */
-    void delete(QuestionRefImageEntity questionRefImages);
-
-    /**
      * Gets a QuestionRefImages.
      *
      * @param id Long
@@ -72,6 +42,14 @@ public interface QuestionRefImageRepository extends JpaRepository<QuestionRefIma
      * @param id Long
      * @return QuestionRefImages
      */
-    Optional<List<QuestionRefImageEntity>> findByQuestionId(long id);
+    Optional<List<QuestionRefImageEntity>> findByQuestionId(Long id);
+
+    /**
+     * Gets a QuestionRefImages.
+     *
+     * @param id Long
+     * @return QuestionRefImages
+     */
+    Optional<List<QuestionRefImageEntity>> findByImageId(Long id);
 
 }

@@ -21,6 +21,7 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -29,13 +30,14 @@ import java.util.Date;
  */
 @Data
 @Entity
-@Table(name = "LIBRARIES")
-public class LibraryEntity extends BaseEntity {
+@Table(name = "LIBRARY")
+public class LibraryEntity {
 
     /**
      * Remote ID.
      */
-    private Long remoteId;
+    @Id
+    private Long id;
 
     /**
      * Region.

@@ -37,33 +37,10 @@ public interface TestRepository extends JpaRepository<TestEntity, Long> {
     Optional<TestEntity> findByTestId(Long id);
 
     /**
-     * Saves a Test.
+     * Gets tests by group id.
      *
-     * @param test Test
-     * @return Test
+     * @param groupId group ID
+     * @return list of tests
      */
-    TestEntity save(TestEntity test);
-
-    /**
-     * Gets all Test.
-     *
-     * @return list of Test
-     */
-    List<TestEntity> findAll();
-
-    /**
-     * Deletes a Test.
-     *
-     * @param test Test
-     */
-    void delete(TestEntity test);
-
-    /**
-     * Gets a Test.
-     *
-     * @param id Long
-     * @return Test
-     */
-    TestEntity findById(long id);
-
+    Optional<List<TestEntity>> findByGroupId(Long groupId);
 }

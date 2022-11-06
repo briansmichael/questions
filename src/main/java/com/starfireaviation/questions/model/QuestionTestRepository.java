@@ -29,34 +29,20 @@ import java.util.Optional;
 public interface QuestionTestRepository extends JpaRepository<QuestionTestEntity, Long> {
 
     /**
-     * Gets a QuestionTest by remote ID.
+     * Gets a QuestionTest by question ID.
      *
-     * @param id remote ID
+     * @param id question ID
      * @return QuestionTest
      */
-    Optional<QuestionTestEntity> findByRemoteId(Long id);
+    Optional<List<QuestionTestEntity>> findByQuestionId(Long id);
 
     /**
-     * Saves a QuestionTest.
+     * Gets a QuestionTest by test ID.
      *
-     * @param questionTest QuestionTest
+     * @param id test ID
      * @return QuestionTest
      */
-    QuestionTestEntity save(QuestionTestEntity questionTest);
-
-    /**
-     * Gets all QuestionTest.
-     *
-     * @return list of QuestionTest
-     */
-    List<QuestionTestEntity> findAll();
-
-    /**
-     * Deletes a QuestionTest.
-     *
-     * @param questionTest QuestionTest
-     */
-    void delete(QuestionTestEntity questionTest);
+    Optional<List<QuestionTestEntity>> findByTestId(Long id);
 
     /**
      * Gets a QuestionTest.
@@ -64,6 +50,6 @@ public interface QuestionTestRepository extends JpaRepository<QuestionTestEntity
      * @param id Long
      * @return QuestionTest
      */
-    QuestionTestEntity findById(long id);
+    Optional<QuestionTestEntity> findById(Long id);
 
 }

@@ -29,41 +29,26 @@ import java.util.Optional;
 public interface SubjectMatterCodeRepository extends JpaRepository<SubjectMatterCodeEntity, Long> {
 
     /**
-     * Gets a SubjectMatterCode by Remote ID.
+     * Gets a SubjectMatterCode by ID.
      *
-     * @param id remote ID
+     * @param id ID
      * @return SubjectMatterCode
      */
-    Optional<SubjectMatterCodeEntity> findByRemoteId(Long id);
+    Optional<SubjectMatterCodeEntity> findById(Long id);
 
     /**
-     * Saves a SubjectMatterCode.
+     * Gets a SubjectMatterCode by source ID.
      *
-     * @param subjectMatterCode SubjectMatterCode
-     * @return SubjectMatterCode
-     */
-    SubjectMatterCodeEntity save(SubjectMatterCodeEntity subjectMatterCode);
-
-    /**
-     * Gets all SubjectMatterCode.
-     *
+     * @param id source ID
      * @return list of SubjectMatterCode
      */
-    List<SubjectMatterCodeEntity> findAll();
+    Optional<List<SubjectMatterCodeEntity>> findBySourceId(Long id);
 
     /**
-     * Deletes a SubjectMatterCode.
+     * Gets a SubjectMatterCode by code.
      *
-     * @param subjectMatterCode SubjectMatterCode
+     * @param code code
+     * @return list of SubjectMatterCode
      */
-    void delete(SubjectMatterCodeEntity subjectMatterCode);
-
-    /**
-     * Gets a SubjectMatterCode.
-     *
-     * @param id Long
-     * @return SubjectMatterCode
-     */
-    SubjectMatterCodeEntity findById(long id);
-
+    Optional<List<SubjectMatterCodeEntity>> findByCode(String code);
 }

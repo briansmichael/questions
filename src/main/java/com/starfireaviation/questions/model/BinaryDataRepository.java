@@ -19,7 +19,6 @@ package com.starfireaviation.questions.model;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,41 +28,11 @@ import java.util.Optional;
 public interface BinaryDataRepository extends JpaRepository<BinaryDataEntity, Long> {
 
     /**
-     * Gets a BinaryData by Remote ID.
-     *
-     * @param id remote ID
-     * @return BinaryData
-     */
-    Optional<BinaryDataEntity> findByRemoteId(Long id);
-
-    /**
-     * Saves a BinaryData.
-     *
-     * @param binaryData BinaryData
-     * @return BinaryData
-     */
-    BinaryDataEntity save(BinaryDataEntity binaryData);
-
-    /**
-     * Gets all BinaryData.
-     *
-     * @return list of BinaryData
-     */
-    List<BinaryDataEntity> findAll();
-
-    /**
-     * Deletes a BinaryData.
-     *
-     * @param binaryData BinaryData
-     */
-    void delete(BinaryDataEntity binaryData);
-
-    /**
      * Gets a BinaryData.
      *
      * @param id Long
      * @return BinaryData
      */
-    BinaryDataEntity findById(long id);
+    Optional<BinaryDataEntity> findById(long id);
 
 }
