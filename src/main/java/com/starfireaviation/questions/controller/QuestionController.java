@@ -139,8 +139,8 @@ public class QuestionController {
             return cache.get(id);
         }
         final Question question = map(questionService.get(id));
-        question.setAnswers(getQuestionAnswers(id));
-        question.setImages(getQuestionImages(id));
+        question.setAnswers(getQuestionAnswers(question.getRemoteId()));
+        question.setImages(getQuestionImages(question.getRemoteId()));
         cache.put(id, question);
         return question;
     }

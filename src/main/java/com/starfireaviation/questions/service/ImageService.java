@@ -21,6 +21,7 @@ import com.starfireaviation.questions.model.ImageEntity;
 import com.starfireaviation.questions.model.ImageRepository;
 import com.starfireaviation.questions.model.QuestionRefImageRepository;
 import com.starfireaviation.questions.model.QuestionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 /**
  * ImageService.
  */
+@Slf4j
 @Service
 public class ImageService {
 
@@ -74,12 +76,12 @@ public class ImageService {
     /**
      * Gets all images for a question.
      *
-     * @param id Long
+     * @param remoteId Long
      * @return Image
      */
-    public List<ImageEntity> getImageForQuestionId(final long id) {
+    public List<ImageEntity> getImageForQuestionId(final long remoteId) {
         return questionRefImageRepository
-                .findByQuestionId(questionRepository.findRemoteIdById(id).orElseThrow())
+                .findByQuestionId(remoteId)
                 .orElseThrow()
                 .stream()
                 .map(questionRefImageEntity -> imageRepository
