@@ -28,7 +28,7 @@ import java.util.Date;
  */
 @Data
 @Entity
-@Table(name = "GROUPS")
+@Table(name = "GRPS")
 public class GroupEntity {
 
     /**
