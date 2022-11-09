@@ -29,7 +29,6 @@ import com.starfireaviation.questions.service.AnswerService;
 import com.starfireaviation.questions.service.ImageService;
 import com.starfireaviation.questions.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,8 +37,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -201,12 +198,6 @@ public class QuestionController {
     private Image map(final ImageEntity imageEntity) {
         final Image image = new Image();
         image.setId(imageEntity.getId());
-        final String fileName = applicationProperties.getImageDir() + "/" + imageEntity.getFileName();
-        try {
-            image.setBinImage(FileUtils.readFileToByteArray(new File(fileName)));
-        } catch (IOException e) {
-            log.error("Unable to read {}", fileName);
-        }
         image.setImageName(imageEntity.getImageName());
         image.setLastModified(imageEntity.getLastModified());
         image.setDescription(imageEntity.getDescription());
