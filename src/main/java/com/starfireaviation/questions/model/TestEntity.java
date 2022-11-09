@@ -24,11 +24,11 @@ import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * Ref.
+ * Tests.
  */
 @Data
 @Entity
-@Table(name = "REFS")
+@Table(name = "TESTS")
 public class TestEntity {
 
     /**
