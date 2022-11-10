@@ -152,11 +152,11 @@ public class QuestionService {
         final List<Long> questionIds = new ArrayList<>();
         if (groupAbbr != null) {
             groupRepository.findByGroupAbbr(groupAbbr)
-                    .ifPresent(groupEntities -> groupEntities.forEach(groupEntity ->
-                            acsRepository.findByGroupId(groupEntity.getGroupId()).ifPresent(acsEntities ->
-                    acsEntities.forEach(acsEntity -> questionACSRepository.findByAcsId(acsEntity.getId())
-                            .ifPresent(acs -> acs.forEach(questionACS ->
-                                    questionIds.add(questionACS.getQuestionId())))))));
+                .ifPresent(groups -> groups.forEach(group -> chapterRepository.findByGroupId(group.getGroupId())
+                    .ifPresent(chapters -> chapters.forEach(chapter -> 
+                        questionRepository.findByChapterId(chapter.getChapterId())
+                            .ifPresent(questions -> questions.forEach(question -> 
+                                questionIds.add(question.getQuestionId())))))));
         }
         if (acsCode != null) {
             final List<Long> list = new ArrayList<>();
