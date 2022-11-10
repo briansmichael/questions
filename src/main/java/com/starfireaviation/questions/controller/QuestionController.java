@@ -229,8 +229,8 @@ public class QuestionController {
         question.setSource(questionEntity.getSource());
         question.setText(questionEntity.getText());
         question.setAcsCode(questionService.getACSCodeForQuestionId(question.getId()));
-        question.setAnswers(getQuestionAnswers(question.getRemoteId()));
-        question.setImages(getQuestionImages(question.getRemoteId()));
+        question.setAnswers(getQuestionAnswers(question.getId()));
+        question.setImages(getQuestionImages(question.getId()));
         question.setLearningStatementCode(questionService.getLearningStatementCode(questionEntity.getLscId()));
         return question;
     }
