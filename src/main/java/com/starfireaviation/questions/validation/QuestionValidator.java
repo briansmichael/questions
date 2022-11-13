@@ -16,8 +16,8 @@
 
 package com.starfireaviation.questions.validation;
 
-import com.starfireaviation.model.Question;
-import com.starfireaviation.questions.exception.InvalidPayloadException;
+import com.starfireaviation.common.model.Question;
+import com.starfireaviation.common.exception.InvalidPayloadException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

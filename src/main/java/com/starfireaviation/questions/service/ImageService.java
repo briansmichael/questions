@@ -16,7 +16,7 @@
 
 package com.starfireaviation.questions.service;
 
-import com.starfireaviation.questions.exception.ResourceNotFoundException;
+import com.starfireaviation.common.exception.ResourceNotFoundException;
 import com.starfireaviation.questions.model.ImageEntity;
 import com.starfireaviation.questions.model.ImageRepository;
 import com.starfireaviation.questions.model.QuestionRefImageRepository;

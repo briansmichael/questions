@@ -1,5 +1,6 @@
 questions:
   image-dir: ${IMAGE_DIR}
+  media-url-base: ${MEDIA_URL_BASE}
   connect-timeout: 3000
   read-timeout: 30000
 

@@ -16,10 +16,10 @@
 
 package com.starfireaviation.questions.controller;
 
-import com.starfireaviation.model.Quiz;
-import com.starfireaviation.questions.exception.AccessDeniedException;
-import com.starfireaviation.questions.exception.InvalidPayloadException;
-import com.starfireaviation.questions.exception.ResourceNotFoundException;
+import com.starfireaviation.common.model.Quiz;
+import com.starfireaviation.common.exception.AccessDeniedException;
+import com.starfireaviation.common.exception.InvalidPayloadException;
+import com.starfireaviation.common.exception.ResourceNotFoundException;
 import com.starfireaviation.questions.model.QuizEntity;
 import com.starfireaviation.questions.service.QuizService;
 import com.starfireaviation.questions.validation.QuizValidator;

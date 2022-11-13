@@ -16,11 +16,11 @@
 
 package com.starfireaviation.questions;
 
-import com.starfireaviation.model.Event;
-import com.starfireaviation.model.Question;
-import com.starfireaviation.model.Quiz;
-import com.starfireaviation.model.ReferenceMaterial;
-import com.starfireaviation.model.User;
+import com.starfireaviation.common.model.Event;
+import com.starfireaviation.common.model.Question;
+import com.starfireaviation.common.model.Quiz;
+import com.starfireaviation.common.model.ReferenceMaterial;
+import com.starfireaviation.common.model.User;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

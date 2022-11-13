@@ -16,7 +16,7 @@
 
 package com.starfireaviation.questions.service;
 
-import com.starfireaviation.model.User;
+import com.starfireaviation.common.model.User;
 import com.starfireaviation.questions.config.ApplicationProperties;
 import com.starfireaviation.questions.model.ACSRepository;
 import com.starfireaviation.questions.model.AnswerRepository;

@@ -34,6 +34,11 @@ public class ApplicationProperties {
     private String imageDir;
 
     /**
+     * Media URL Base.
+     */
+    private String mediaUrlBase;
+
+    /**
      * Connect Timeout.
      */
     private int connectTimeout;

@@ -18,9 +18,9 @@ package com.starfireaviation.questions.controller;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.starfireaviation.model.Answer;
-import com.starfireaviation.model.Image;
-import com.starfireaviation.model.Question;
+import com.starfireaviation.common.model.Answer;
+import com.starfireaviation.common.model.Image;
+import com.starfireaviation.common.model.Question;
 import com.starfireaviation.questions.config.ApplicationProperties;
 import com.starfireaviation.questions.model.AnswerEntity;
 import com.starfireaviation.questions.model.ImageEntity;
@@ -209,6 +209,7 @@ public class QuestionController {
         image.setPixelsPerNM(imageEntity.getPixelsPerNM());
         image.setSortBy(imageEntity.getSortBy());
         image.setTestId(imageEntity.getTestId());
+        image.setUrl(applicationProperties.getMediaUrlBase() + image.getFileName());
         return image;
     }
 

@@ -16,8 +16,8 @@
 
 package com.starfireaviation.questions;
 
-import com.starfireaviation.model.CommonConstants;
-import com.starfireaviation.model.Question;
+import com.starfireaviation.common.CommonConstants;
+import com.starfireaviation.common.model.Question;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;

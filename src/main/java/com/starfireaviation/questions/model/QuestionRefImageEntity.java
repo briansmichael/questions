@@ -16,7 +16,7 @@
 
 package com.starfireaviation.questions.model;
 
-import com.starfireaviation.model.CommonConstants;
+import com.starfireaviation.common.CommonConstants;
 import lombok.Data;
 
 import javax.persistence.Column;

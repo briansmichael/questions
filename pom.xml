@@ -34,7 +34,7 @@
 		<java.version>11</java.version>
 		<sqlite.version>3.39.3.0</sqlite.version>
 		<cucumber.version>7.8.1</cucumber.version>
-		<sa.model.version>0.0.12</sa.model.version>
+		<sa.common.version>0.1.0</sa.common.version>
 		<hazelcast.version>5.2.0</hazelcast.version>
 		<springdoc.version>1.6.11</springdoc.version>
 		<bouncycastle.version>1.70</bouncycastle.version>
@@ -51,8 +51,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.starfireaviation</groupId>
-			<artifactId>model</artifactId>
-			<version>${sa.model.version}</version>
+			<artifactId>common</artifactId>
+			<version>${sa.common.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.cucumber</groupId>
