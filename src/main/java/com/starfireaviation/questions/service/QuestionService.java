@@ -22,6 +22,7 @@ import com.starfireaviation.questions.model.ChapterEntity;
 import com.starfireaviation.questions.model.ChapterRepository;
 import com.starfireaviation.questions.model.GroupEntity;
 import com.starfireaviation.questions.model.GroupRepository;
+import com.starfireaviation.questions.model.QuestionACS;
 import com.starfireaviation.questions.model.QuestionACSRepository;
 import com.starfireaviation.questions.model.QuestionEntity;
 import com.starfireaviation.questions.model.QuestionRepository;
@@ -152,17 +153,30 @@ public class QuestionService {
         final List<Long> questionIds = new ArrayList<>();
         if (groupAbbr != null) {
             groupRepository.findByGroupAbbr(groupAbbr)
-                    .ifPresent(groupEntities -> groupEntities.forEach(groupEntity ->
-                            acsRepository.findByGroupId(groupEntity.getGroupId()).ifPresent(acsEntities ->
-                    acsEntities.forEach(acsEntity -> questionACSRepository.findByAcsId(acsEntity.getId())
-                            .ifPresent(acs -> acs.forEach(questionACS ->
-                                    questionIds.add(questionACS.getQuestionId())))))));
+                .ifPresent(groups -> groups.forEach(group -> chapterRepository.findByGroupId(group.getGroupId())
+                    .ifPresent(chapters -> chapters.forEach(chapter -> 
+                        questionRepository.findByChapterId(chapter.getChapterId())
+                            .ifPresent(questions -> questions.forEach(question -> 
+                                questionIds.add(question.getQuestionId())))))));
         }
         if (acsCode != null) {
             final List<Long> list = new ArrayList<>();
-            acsRepository.findByCode(acsCode).ifPresent(acsEntities -> acsEntities.forEach(acsEntity ->
-                    questionACSRepository.findByAcsId(acsEntity.getId()).ifPresent(acs -> acs.forEach(questionACS ->
-                            list.add(questionACS.getQuestionId())))));
+            final Optional<List<ACSEntity>> acsListOpt = acsRepository.findByCode(acsCode);
+            if (acsListOpt.isPresent()) {
+                final List<ACSEntity> acsList = acsListOpt.get();
+                log.info("acsList.size() = {}", acsList.size());
+                for (final ACSEntity acs : acsList) {
+                    final Optional<List<QuestionACS>> questionACSListOpt = 
+                        questionACSRepository.findByAcsId(acs.getId());
+                    if (questionACSListOpt.isPresent()) {
+                        final List<QuestionACS> questionACSList = questionACSListOpt.get();
+                        log.info("questionAcsList.size() = {}", questionACSList.size());
+                        for (final QuestionACS questionACS : questionACSList) {
+                            list.add(questionACS.getQuestionId());
+                        }
+                    }
+                }
+            }
             if (CollectionUtils.isEmpty(questionIds)) {
                 questionIds.addAll(list);
             } else {
