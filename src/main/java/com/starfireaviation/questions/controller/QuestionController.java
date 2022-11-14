@@ -87,6 +87,7 @@ public class QuestionController {
      * Gets list of question IDs matching search criteria.
      *
      * @param group optional group abbreviation
+     * @param chapter optional chapter
      * @param acsCode optional ACS code
      * @param learningStatementCode optional learning statement code
      * @return list of question ids
@@ -94,8 +95,9 @@ public class QuestionController {
     @GetMapping
     public List<Long> getQuestions(@RequestParam(value = "group", required = false) final String group,
                                    @RequestParam(value = "acs", required = false) final String acsCode,
+                                   @RequestParam(value = "chapter", required = false) final Long chapter,
                                    @RequestParam(value = "lsc", required = false) final String learningStatementCode) {
-        return questionService.getQuestions(group, acsCode, learningStatementCode);
+        return questionService.getQuestions(group, chapter, acsCode, learningStatementCode);
     }
 
     /**
@@ -229,7 +231,7 @@ public class QuestionController {
         question.setSmcId(questionEntity.getSmcId());
         question.setSource(questionEntity.getSource());
         question.setText(questionEntity.getText());
-        question.setAcsCode(questionService.getACSCodeForQuestionId(question.getId()));
+        question.setAcsCodes(questionService.getACSCodesForQuestionId(question.getId()));
         question.setAnswers(getQuestionAnswers(question.getId()));
         question.setImages(getQuestionImages(question.getId()));
         question.setLearningStatementCode(questionService.getLearningStatementCode(questionEntity.getLscId()));
