@@ -70,9 +70,14 @@ public class QuestionController {
     private ApplicationProperties applicationProperties;
 
     /**
-     * HazelcastInstance.
+     * Questions Cache.
      */
     private final IMap<Long, Question> cache;
+
+    /**
+     * Question IDs Cache.
+     */
+    private final IMap<String, List<Long>> idsCache;
 
     /**
      * Constructor.
@@ -81,6 +86,7 @@ public class QuestionController {
      */
     public QuestionController(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
         cache = hazelcastInstance.getMap("questions");
+        idsCache = hazelcastInstance.getMap("questionIds");
     }
 
     /**
@@ -97,7 +103,13 @@ public class QuestionController {
                                    @RequestParam(value = "acs", required = false) final String acsCode,
                                    @RequestParam(value = "chapter", required = false) final Long chapter,
                                    @RequestParam(value = "lsc", required = false) final String learningStatementCode) {
-        return questionService.getQuestions(group, chapter, acsCode, learningStatementCode);
+        final String key = formKey(group, acsCode, chapter, learningStatementCode);
+        if (idsCache.containsKey(key)) {
+            return idsCache.get(key);
+        }
+        final List<Long> questionIds = questionService.getQuestions(group, chapter, acsCode, learningStatementCode);
+        idsCache.put(key, questionIds);
+        return questionIds;
     }
 
     /**
@@ -172,6 +184,19 @@ public class QuestionController {
                 .stream()
                 .map(this::map)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Forms a key from the provided values.
+     *
+     * @param group group
+     * @param acs ACS code
+     * @param chapter chapter
+     * @param lsc learning statement code
+     * @return key
+     */
+    private String formKey(String group, String acs, Long chapter, String lsc) {
+        return String.format("group=%s;acs=%s;chapter=%s;lsc=%s", group, acs, chapter, lsc);
     }
 
     /**
