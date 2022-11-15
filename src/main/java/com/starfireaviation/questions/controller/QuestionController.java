@@ -195,7 +195,7 @@ public class QuestionController {
      * @param lsc learning statement code
      * @return key
      */
-    private String formKey(String group, String acs, Long chapter, String lsc) {
+    private String formKey(final String group, final String acs, final Long chapter, final String lsc) {
         return String.format("group=%s;acs=%s;chapter=%s;lsc=%s", group, acs, chapter, lsc);
     }
 
