@@ -34,9 +34,9 @@
 		<java.version>11</java.version>
 		<sqlite.version>3.39.3.0</sqlite.version>
 		<cucumber.version>7.8.1</cucumber.version>
-		<sa.common.version>0.1.1</sa.common.version>
-		<hazelcast.version>5.2.0</hazelcast.version>
-		<springdoc.version>1.6.11</springdoc.version>
+		<sa.common.version>0.1.6</sa.common.version>
+		<hazelcast.version>5.2.1</hazelcast.version>
+		<springdoc.version>1.6.12</springdoc.version>
 		<bouncycastle.version>1.70</bouncycastle.version>
 		<commons.io.version>2.11.0</commons.io.version>
 	</properties>

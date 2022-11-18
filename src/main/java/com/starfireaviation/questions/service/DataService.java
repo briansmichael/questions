@@ -17,27 +17,7 @@
 package com.starfireaviation.questions.service;
 
 import com.starfireaviation.common.model.User;
-import com.starfireaviation.questions.config.ApplicationProperties;
-import com.starfireaviation.questions.model.ACSRepository;
-import com.starfireaviation.questions.model.AnswerRepository;
-import com.starfireaviation.questions.model.BinaryDataRepository;
-import com.starfireaviation.questions.model.ChapterRepository;
-import com.starfireaviation.questions.model.FigureSectionRepository;
-import com.starfireaviation.questions.model.GroupRepository;
-import com.starfireaviation.questions.model.ImageRepository;
-import com.starfireaviation.questions.model.LibraryRepository;
-import com.starfireaviation.questions.model.QuestionACSRepository;
-import com.starfireaviation.questions.model.QuestionRefImageRepository;
-import com.starfireaviation.questions.model.QuestionReferenceRepository;
-import com.starfireaviation.questions.model.QuestionRepository;
-import com.starfireaviation.questions.model.QuestionTestRepository;
-import com.starfireaviation.questions.model.RefRepository;
-import com.starfireaviation.questions.model.SourceRepository;
-import com.starfireaviation.questions.model.SubjectMatterCodeRepository;
-import com.starfireaviation.questions.model.TestRepository;
-import com.starfireaviation.questions.model.TextConstRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -48,129 +28,28 @@ import org.springframework.stereotype.Service;
 public class DataService {
 
     /**
-     * ApplicationProperties.
+     * Gets a User by username.
+     *
+     * @param name user name
+     * @return User
      */
-    @Autowired
-    private ApplicationProperties applicationProperties;
-
-    /**
-     * QuestionRepository.
-     */
-    @Autowired
-    private QuestionRepository questionRepository;
-
-    /**
-     * AnswerRepository.
-     */
-    @Autowired
-    private AnswerRepository answerRepository;
-
-    /**
-     * ACSRepository.
-     */
-    @Autowired
-    private ACSRepository acsRepository;
-
-    /**
-     * ChaptersRepository.
-     */
-    @Autowired
-    private ChapterRepository chaptersRepository;
-
-    /**
-     * FigureSectionsRepository.
-     */
-    @Autowired
-    private FigureSectionRepository figureSectionsRepository;
-
-    /**
-     * GroupsRepository.
-     */
-    @Autowired
-    private GroupRepository groupsRepository;
-
-    /**
-     * BinaryDataRepository.
-     */
-    @Autowired
-    private BinaryDataRepository binaryDataRepository;
-
-    /**
-     * ImageRepository.
-     */
-    @Autowired
-    private ImageRepository imageRepository;
-
-    /**
-     * LibrarysRepository.
-     */
-    @Autowired
-    private LibraryRepository librarysRepository;
-
-    /**
-     * QuestionACSRepository.
-     */
-    @Autowired
-    private QuestionACSRepository questionACSRepository;
-
-    /**
-     * QuestionRefImagesRepository.
-     */
-    @Autowired
-    private QuestionRefImageRepository questionRefImagesRepository;
-
-    /**
-     * QuestionReferencesRepository.
-     */
-    @Autowired
-    private QuestionReferenceRepository questionReferencesRepository;
-
-    /**
-     * QuestionTestsRepository.
-     */
-    @Autowired
-    private QuestionTestRepository questionTestsRepository;
-
-    /**
-     * RefsRepository.
-     */
-    @Autowired
-    private RefRepository refsRepository;
-
-    /**
-     * TestsRepository.
-     */
-    @Autowired
-    private TestRepository testsRepository;
-
-    /**
-     * SubjectMatterCodesRepository.
-     */
-    @Autowired
-    private SubjectMatterCodeRepository subjectMatterCodesRepository;
-
-    /**
-     * SourcesRepository.
-     */
-    @Autowired
-    private SourceRepository sourcesRepository;
-
-    /**
-     * TextConstRepository.
-     */
-    @Autowired
-    private TextConstRepository textConstRepository;
-
-    public DataService() {
+    public User getUser(final String name) {
+        // TODO call GET https://users.starfireaviation.com/api/users?username={name}
+        final Long userId = null;
+        if (userId != null) {
+            return getUser(userId);
+        }
+        return null;
     }
 
     /**
-     * Get User.
+     * Gets a User by ID.
      *
-     * @param userName username
+     * @param userId user ID
      * @return User
      */
-    public User getUser(final String userName) {
+    public User getUser(final Long userId) {
+        // TODO call GET https://users.starfireaviation.com/api/users/{userId}
         return null;
     }
 
