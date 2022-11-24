@@ -20,7 +20,7 @@ import com.starfireaviation.common.model.Role;
 import com.starfireaviation.common.model.User;
 import com.starfireaviation.common.exception.AccessDeniedException;
 import com.starfireaviation.common.exception.ResourceNotFoundException;
-import com.starfireaviation.questions.service.DataService;
+import com.starfireaviation.common.service.DataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

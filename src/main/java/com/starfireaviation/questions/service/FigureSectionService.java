@@ -18,73 +18,52 @@ package com.starfireaviation.questions.service;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.starfireaviation.common.model.Quiz;
+import com.starfireaviation.common.model.FigureSection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-/**
- * QuizService.
- */
 @Slf4j
 @Service
-public class QuizService {
+public class FigureSectionService {
 
     /**
-     * Quiz Cache.
+     * FigureSection Cache.
      */
-    private final IMap<Long, Quiz> cache;
+    private final IMap<Long, FigureSection> cache;
 
     /**
-     * QuizService.
+     * FigureSectionService.
      *
      * @param hazelcastInstance HazelcastInstance
      */
-    public QuizService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
-        cache = hazelcastInstance.getMap("quiz");
+    public FigureSectionService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("figuresection");
     }
 
     /**
-     * Gets a quiz.
+     * Gets an FigureSection by ID.
      *
-     * @param id Long
-     * @return Quiz
+     * @param id FigureSection ID
+     * @return FigureSection
      */
-    public Quiz get(final long id) {
+    public FigureSection get(final Long id) {
         return cache.get(id);
     }
 
     /**
-     * Gets all quizzes for a given lesson plan.
+     * Saves a FigureSection.
      *
-     * @param lessonPlanId Long
-     * @return Quiz
+     * @param figureSection FigureSection
+     * @return FigureSection
      */
-    public List<Quiz> findByLessonPlanId(final Long lessonPlanId) {
-        return cache
-                .values()
-                .stream()
-                .filter(quiz -> Objects.equals(quiz.getLessonPlanId(), lessonPlanId))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Saves a Quiz.
-     *
-     * @param quiz Quiz
-     * @return Quiz
-     */
-    public Quiz save(final Quiz quiz) {
-        if (quiz == null) {
+    public FigureSection save(final FigureSection figureSection) {
+        if (figureSection == null) {
             return null;
-        } else if (quiz.getId() == null) {
-            quiz.setId(assignId());
+        } else if (figureSection.getFigureSectionId() == null) {
+            figureSection.setFigureSectionId(assignId());
         }
-        return cache.put(quiz.getId(), quiz);
+        return cache.put(figureSection.getFigureSectionId(), figureSection);
     }
 
     /**
@@ -101,5 +80,4 @@ public class QuizService {
         }
         return max + 1;
     }
-
 }

@@ -18,7 +18,7 @@ package com.starfireaviation.questions.service;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.starfireaviation.common.model.Quiz;
+import com.starfireaviation.common.model.QuestionTest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -27,64 +27,75 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * QuizService.
- */
 @Slf4j
 @Service
-public class QuizService {
+public class QuestionTestService {
 
     /**
-     * Quiz Cache.
+     * QuestionTest Cache.
      */
-    private final IMap<Long, Quiz> cache;
+    private final IMap<Long, QuestionTest> cache;
 
     /**
-     * QuizService.
+     * QuestionTestService.
      *
      * @param hazelcastInstance HazelcastInstance
      */
-    public QuizService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
-        cache = hazelcastInstance.getMap("quiz");
+    public QuestionTestService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("questiontest");
     }
 
     /**
-     * Gets a quiz.
+     * Gets a QuestionTest by question ID.
      *
-     * @param id Long
-     * @return Quiz
+     * @param questionId question ID
+     * @return QuestionTest
      */
-    public Quiz get(final long id) {
-        return cache.get(id);
-    }
-
-    /**
-     * Gets all quizzes for a given lesson plan.
-     *
-     * @param lessonPlanId Long
-     * @return Quiz
-     */
-    public List<Quiz> findByLessonPlanId(final Long lessonPlanId) {
+    public List<QuestionTest> findByQuestionId(final Long questionId) {
         return cache
                 .values()
                 .stream()
-                .filter(quiz -> Objects.equals(quiz.getLessonPlanId(), lessonPlanId))
+                .filter(questionTest -> Objects.equals(questionTest.getQuestionId(), questionId))
                 .collect(Collectors.toList());
     }
 
     /**
-     * Saves a Quiz.
+     * Gets a QuestionTest by test ID.
      *
-     * @param quiz Quiz
-     * @return Quiz
+     * @param testId test ID
+     * @return QuestionTest
      */
-    public Quiz save(final Quiz quiz) {
-        if (quiz == null) {
+    public List<QuestionTest> findByTestId(final Long testId) {
+        return cache
+                .values()
+                .stream()
+                .filter(questionTest -> Objects.equals(questionTest.getTestId(), testId))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets a QuestionTest by ID.
+     *
+     * @param id QuestionTest ID
+     * @return QuestionTest
+     */
+    public QuestionTest get(final Long id) {
+        return cache.get(id);
+    }
+
+    /**
+     * Saves a QuestionTest.
+     *
+     * @param questionTest QuestionTest
+     * @return QuestionTest
+     */
+    public QuestionTest save(final QuestionTest questionTest) {
+        if (questionTest == null) {
             return null;
-        } else if (quiz.getId() == null) {
-            quiz.setId(assignId());
+        } else if (questionTest.getId() == null) {
+            questionTest.setId(assignId());
         }
-        return cache.put(quiz.getId(), quiz);
+        return cache.put(questionTest.getId(), questionTest);
     }
 
     /**
@@ -101,5 +112,4 @@ public class QuizService {
         }
         return max + 1;
     }
-
 }

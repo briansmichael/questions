@@ -18,73 +18,88 @@ package com.starfireaviation.questions.service;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.starfireaviation.common.model.Quiz;
+import com.starfireaviation.common.model.ACS;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * QuizService.
- */
 @Slf4j
 @Service
-public class QuizService {
+public class ACSService {
 
     /**
-     * Quiz Cache.
+     * ACS Cache.
      */
-    private final IMap<Long, Quiz> cache;
+    private final IMap<Long, ACS> cache;
 
     /**
-     * QuizService.
+     * ACSService.
      *
      * @param hazelcastInstance HazelcastInstance
      */
-    public QuizService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
-        cache = hazelcastInstance.getMap("quiz");
+    public ACSService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("acs");
     }
 
     /**
-     * Gets a quiz.
+     * Gets ACS by group ID.
      *
-     * @param id Long
-     * @return Quiz
+     * @param groupId group ID
+     * @return list of ACS
      */
-    public Quiz get(final long id) {
-        return cache.get(id);
-    }
-
-    /**
-     * Gets all quizzes for a given lesson plan.
-     *
-     * @param lessonPlanId Long
-     * @return Quiz
-     */
-    public List<Quiz> findByLessonPlanId(final Long lessonPlanId) {
+    public List<ACS> findByGroupId(final Long groupId) {
         return cache
                 .values()
                 .stream()
-                .filter(quiz -> Objects.equals(quiz.getLessonPlanId(), lessonPlanId))
+                .filter(acs -> Objects.equals(acs.getGroupId(), groupId))
                 .collect(Collectors.toList());
     }
 
     /**
-     * Saves a Quiz.
+     * Gets ACS by code.
      *
-     * @param quiz Quiz
-     * @return Quiz
+     * @param code code
+     * @return list of ACS
      */
-    public Quiz save(final Quiz quiz) {
-        if (quiz == null) {
-            return null;
-        } else if (quiz.getId() == null) {
-            quiz.setId(assignId());
+    public List<ACS> findByCode(final String code) {
+        if (code == null) {
+            return new ArrayList<>();
         }
-        return cache.put(quiz.getId(), quiz);
+        return cache
+                .values()
+                .stream()
+                .filter(acs -> code.equalsIgnoreCase(acs.getCode()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets an ACS by ID.
+     *
+     * @param id ACS ID
+     * @return ACS
+     */
+    public ACS get(final Long id) {
+        return cache.get(id);
+    }
+
+    /**
+     * Saves an ACS.
+     *
+     * @param acs ACS
+     * @return ACS
+     */
+    public ACS save(final ACS acs) {
+        if (acs == null) {
+            return null;
+        } else if (acs.getId() == null) {
+            acs.setId(assignId());
+        }
+        return cache.put(acs.getId(), acs);
     }
 
     /**
@@ -101,5 +116,4 @@ public class QuizService {
         }
         return max + 1;
     }
-
 }

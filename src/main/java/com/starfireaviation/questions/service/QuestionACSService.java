@@ -18,7 +18,7 @@ package com.starfireaviation.questions.service;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.starfireaviation.common.model.Quiz;
+import com.starfireaviation.common.model.QuestionACS;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -27,64 +27,75 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * QuizService.
- */
 @Slf4j
 @Service
-public class QuizService {
+public class QuestionACSService {
 
     /**
-     * Quiz Cache.
+     * QuestionACS Cache.
      */
-    private final IMap<Long, Quiz> cache;
+    private final IMap<Long, QuestionACS> cache;
 
     /**
-     * QuizService.
+     * GroupService.
      *
      * @param hazelcastInstance HazelcastInstance
      */
-    public QuizService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
-        cache = hazelcastInstance.getMap("quiz");
+    public QuestionACSService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("questionacs");
     }
 
     /**
-     * Gets a quiz.
+     * Gets a QuestionACS by ACS ID.
      *
-     * @param id Long
-     * @return Quiz
+     * @param acsId ACS ID
+     * @return QuestionACS
      */
-    public Quiz get(final long id) {
-        return cache.get(id);
-    }
-
-    /**
-     * Gets all quizzes for a given lesson plan.
-     *
-     * @param lessonPlanId Long
-     * @return Quiz
-     */
-    public List<Quiz> findByLessonPlanId(final Long lessonPlanId) {
+    public List<QuestionACS> findByAcsId(final Long acsId) {
         return cache
                 .values()
                 .stream()
-                .filter(quiz -> Objects.equals(quiz.getLessonPlanId(), lessonPlanId))
+                .filter(questionACS -> Objects.equals(questionACS.getAcsId(), acsId))
                 .collect(Collectors.toList());
     }
 
     /**
-     * Saves a Quiz.
+     * Gets a QuestionACS by question ID.
      *
-     * @param quiz Quiz
-     * @return Quiz
+     * @param questionId Question ID
+     * @return QuestionACS
      */
-    public Quiz save(final Quiz quiz) {
-        if (quiz == null) {
+    public List<QuestionACS> findByQuestionId(final Long questionId) {
+        return cache
+                .values()
+                .stream()
+                .filter(questionACS -> Objects.equals(questionACS.getQuestionId(), questionId))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets a QuestionACS by ID.
+     *
+     * @param id QuestionACS ID
+     * @return QuestionACS
+     */
+    public QuestionACS get(final Long id) {
+        return cache.get(id);
+    }
+
+    /**
+     * Saves a QuestionACS.
+     *
+     * @param questionACS QuestionACS
+     * @return QuestionACS
+     */
+    public QuestionACS save(final QuestionACS questionACS) {
+        if (questionACS == null) {
             return null;
-        } else if (quiz.getId() == null) {
-            quiz.setId(assignId());
+        } else if (questionACS.getId() == null) {
+            questionACS.setId(assignId());
         }
-        return cache.put(quiz.getId(), quiz);
+        return cache.put(questionACS.getId(), questionACS);
     }
 
     /**
@@ -101,5 +112,4 @@ public class QuizService {
         }
         return max + 1;
     }
-
 }

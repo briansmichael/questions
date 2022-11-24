@@ -18,39 +18,66 @@ package com.starfireaviation.questions.service;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.starfireaviation.common.model.Image;
+import com.starfireaviation.common.model.Ref;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-/**
- * ImageService.
- */
 @Slf4j
 @Service
-public class ImageService {
+public class RefService {
 
     /**
-     * Image Cache.
+     * Ref Cache.
      */
-    private final IMap<Long, Image> cache;
+    private final IMap<Long, Ref> cache;
 
     /**
-     * ImageService.
+     * RefService.
      *
      * @param hazelcastInstance HazelcastInstance
      */
-    public ImageService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
-        cache = hazelcastInstance.getMap("images");
+    public RefService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("refs");
     }
 
     /**
-     * Gets an image.
+     * Gets a Ref by ID.
      *
-     * @param id Long
-     * @return Image
+     * @param id Ref ID
+     * @return Ref
      */
-    public Image get(final Long id) {
+    public Ref get(final Long id) {
         return cache.get(id);
+    }
+
+    /**
+     * Saves a Ref.
+     *
+     * @param ref Ref
+     * @return Ref
+     */
+    public Ref save(final Ref ref) {
+        if (ref == null) {
+            return null;
+        } else if (ref.getRefId() == null) {
+            ref.setRefId(assignId());
+        }
+        return cache.put(ref.getRefId(), ref);
+    }
+
+    /**
+     * Finds an ID to assign to an entity.
+     *
+     * @return next ID value
+     */
+    private Long assignId() {
+        Long max = Long.MIN_VALUE;
+        for (final Long id : cache.keySet()) {
+            if (id > max) {
+                max = id;
+            }
+        }
+        return max + 1;
     }
 }

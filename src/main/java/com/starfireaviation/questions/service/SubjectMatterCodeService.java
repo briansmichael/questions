@@ -18,73 +18,69 @@ package com.starfireaviation.questions.service;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.starfireaviation.common.model.Quiz;
+import com.starfireaviation.common.model.SubjectMatterCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * QuizService.
- */
 @Slf4j
 @Service
-public class QuizService {
+public class SubjectMatterCodeService {
 
     /**
-     * Quiz Cache.
+     * SubjectMatterCode Cache.
      */
-    private final IMap<Long, Quiz> cache;
+    private final IMap<Long, SubjectMatterCode> cache;
 
     /**
-     * QuizService.
+     * SubjectMatterCodeService.
      *
      * @param hazelcastInstance HazelcastInstance
      */
-    public QuizService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
-        cache = hazelcastInstance.getMap("quiz");
+    public SubjectMatterCodeService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("subjectmattercodes");
     }
 
     /**
-     * Gets a quiz.
+     * Gets a Learning Statement Code by code.
      *
-     * @param id Long
-     * @return Quiz
+     * @param lscCode Learning Statement Code
+     * @return SubjectMatterCode
      */
-    public Quiz get(final long id) {
-        return cache.get(id);
-    }
-
-    /**
-     * Gets all quizzes for a given lesson plan.
-     *
-     * @param lessonPlanId Long
-     * @return Quiz
-     */
-    public List<Quiz> findByLessonPlanId(final Long lessonPlanId) {
+    public List<SubjectMatterCode> findByCode(final String lscCode) {
         return cache
                 .values()
                 .stream()
-                .filter(quiz -> Objects.equals(quiz.getLessonPlanId(), lessonPlanId))
+                .filter(subjectMatterCode -> lscCode.equalsIgnoreCase(subjectMatterCode.getCode()))
                 .collect(Collectors.toList());
     }
 
     /**
-     * Saves a Quiz.
+     * Gets a SubjectMatterCode by ID.
      *
-     * @param quiz Quiz
-     * @return Quiz
+     * @param id SubjectMatterCode ID
+     * @return SubjectMatterCode
      */
-    public Quiz save(final Quiz quiz) {
-        if (quiz == null) {
+    public SubjectMatterCode get(final Long id) {
+        return cache.get(id);
+    }
+
+    /**
+     * Saves a SubjectMatterCode.
+     *
+     * @param subjectMatterCode SubjectMatterCode
+     * @return SubjectMatterCode
+     */
+    public SubjectMatterCode save(final SubjectMatterCode subjectMatterCode) {
+        if (subjectMatterCode == null) {
             return null;
-        } else if (quiz.getId() == null) {
-            quiz.setId(assignId());
+        } else if (subjectMatterCode.getId() == null) {
+            subjectMatterCode.setId(assignId());
         }
-        return cache.put(quiz.getId(), quiz);
+        return cache.put(subjectMatterCode.getId(), subjectMatterCode);
     }
 
     /**
@@ -101,5 +97,4 @@ public class QuizService {
         }
         return max + 1;
     }
-
 }
