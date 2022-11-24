@@ -23,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -33,6 +35,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class AnswerService {
+
+    /**
+     * Answer Choices List.
+     */
+    public static final String ANSWER_CHOICES = "A,B,C,D,E,F,G,H";
 
     /**
      * Answer Cache.
@@ -59,6 +66,15 @@ public class AnswerService {
     }
 
     /**
+     * Gets all answers.
+     *
+     * @return list of Answer
+     */
+    public List<Answer> getAll() {
+        return new ArrayList<>(cache.values());
+    }
+
+    /**
      * Gets all answers for a question.
      *
      * @param questionId question ID
@@ -70,6 +86,25 @@ public class AnswerService {
                 .stream()
                 .filter(answer -> Objects.equals(questionId, answer.getQuestionId()))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Derives choice for answer, if not already set.
+     *
+     * @param choice prior value
+     * @param questionId question ID
+     * @return derived choice value
+     */
+    public String deriveChoice(final String choice, final Long questionId) {
+        if (choice != null) {
+            return choice;
+        }
+        final ArrayList<String> choices = new ArrayList<>(Arrays.asList(ANSWER_CHOICES.split(",")));
+        findByQuestionId(questionId)
+                .stream()
+                .filter(answer -> answer.getChoice() != null)
+                .forEach(answer -> choices.remove(answer.getChoice()));
+        return choices.get(0);
     }
 
     /**

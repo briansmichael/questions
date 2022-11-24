@@ -16,8 +16,8 @@
 
 package com.starfireaviation.questions.controller;
 
-import com.starfireaviation.common.model.Answer;
-import com.starfireaviation.questions.service.AnswerService;
+import com.starfireaviation.common.model.Image;
+import com.starfireaviation.questions.service.ImageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,51 +29,36 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/answers")
-public class AnswerController {
+@RequestMapping("/api/images")
+public class ImageController {
 
     /**
-     * AnswerService.
+     * ImageService.
      */
     @Autowired
-    private AnswerService answerService;
+    private ImageService imageService;
 
     /**
-     * Gets an Answer by ID.
+     * Gets a Image by ID.
      *
-     * @param id Answer ID
-     * @return Answer
+     * @param id Image ID
+     * @return Image
      */
     @GetMapping(path = "/{id}")
-    public Answer getAnswer(@PathVariable("id") final Long id) {
-        return answerService.get(id);
+    public Image getImage(@PathVariable("id") final Long id) {
+        return imageService.get(id);
     }
 
     /**
-     * Updates all answers to have an answer choice value.
-     */
-    @PostMapping(path = "/updatechoices")
-    public void updateChoices() {
-        answerService
-                .getAll()
-                .stream()
-                .filter(answer -> answer.getChoice() == null)
-                .forEach(answer -> {
-            answer.setChoice(answerService.deriveChoice(answer.getChoice(), answer.getQuestionId()));
-            answerService.save(answer);
-        });
-    }
-
-    /**
-     * Saves an Answer.
+     * Saves an Image.
      *
-     * @param answer Answer
-     * @return Answer
+     * @param image Image
+     * @return Image
      */
     @PostMapping
     @PutMapping
-    public Answer save(final Answer answer) {
-        return answerService.save(answer);
+    public Image save(final Image image) {
+        return imageService.save(image);
     }
 
 }

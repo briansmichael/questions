@@ -53,4 +53,34 @@ public class ImageService {
     public Image get(final Long id) {
         return cache.get(id);
     }
+
+    /**
+     * Saves a Image.
+     *
+     * @param image Image
+     * @return Image
+     */
+    public Image save(final Image image) {
+        if (image == null) {
+            return null;
+        } else if (image.getId() == null) {
+            image.setId(assignId());
+        }
+        return cache.put(image.getId(), image);
+    }
+
+    /**
+     * Finds an ID to assign to an entity.
+     *
+     * @return next ID value
+     */
+    private Long assignId() {
+        Long max = Long.MIN_VALUE;
+        for (final Long id : cache.keySet()) {
+            if (id > max) {
+                max = id;
+            }
+        }
+        return max + 1;
+    }
 }
