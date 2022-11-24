@@ -16,26 +16,15 @@
 
 package com.starfireaviation.questions.service;
 
-import com.starfireaviation.questions.model.ACSEntity;
-import com.starfireaviation.questions.model.ACSRepository;
-import com.starfireaviation.questions.model.ChapterEntity;
-import com.starfireaviation.questions.model.ChapterRepository;
-import com.starfireaviation.questions.model.GroupEntity;
-import com.starfireaviation.questions.model.GroupRepository;
-import com.starfireaviation.questions.model.QuestionACS;
-import com.starfireaviation.questions.model.QuestionACSRepository;
-import com.starfireaviation.questions.model.QuestionEntity;
-import com.starfireaviation.questions.model.QuestionRepository;
-import com.starfireaviation.questions.model.SubjectMatterCodeEntity;
-import com.starfireaviation.questions.model.SubjectMatterCodeRepository;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.map.IMap;
+import com.starfireaviation.common.model.Question;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -46,236 +35,69 @@ import java.util.stream.Collectors;
 public class QuestionService {
 
     /**
-     * QuestionRepository.
+     * Question Cache.
      */
-    @Autowired
-    private QuestionRepository questionRepository;
+    private final IMap<Long, Question> cache;
 
     /**
-     * QuestionACSRepository.
+     * QuestionService.
+     *
+     * @param hazelcastInstance HazelcastInstance
      */
-    @Autowired
-    private QuestionACSRepository questionACSRepository;
+    public QuestionService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("questions");
+    }
 
     /**
-     * ACSRepository.
+     * Gets questions by chapter ID.
+     *
+     * @param chapterId chapter ID
+     * @return list of Questions
      */
-    @Autowired
-    private ACSRepository acsRepository;
+    public List<Question> findByChapterId(final Long chapterId) {
+        return cache
+                .values()
+                .stream()
+                .filter(question -> Objects.equals(question.getChapterId(), chapterId))
+                .collect(Collectors.toList());
+    }
 
     /**
-     * ChapterRepository.
+     * Gets questions by chapter ID.
+     *
+     * @param lsc Learning Statement Code
+     * @return list of Questions
      */
-    @Autowired
-    private ChapterRepository chapterRepository;
+    public List<Question> findByLearningStatementCode(final String lsc) {
+        return cache
+                .values()
+                .stream()
+                .filter(question -> Objects.equals(question.getLearningStatementCode(), lsc))
+                .collect(Collectors.toList());
+    }
 
     /**
-     * SubjectMatterCodeRepository.
+     * Gets a Questions by subject matter code.
+     *
+     * @param smcId subject matter code ID
+     * @return list of questions
      */
-    @Autowired
-    private SubjectMatterCodeRepository smcRepository;
+    public List<Question> findBySmcId(final Long smcId) {
+        return cache
+                .values()
+                .stream()
+                .filter(question -> Objects.equals(question.getSmcId(), smcId))
+                .collect(Collectors.toList());
+    }
 
     /**
-     * GroupRepository.
-     */
-    @Autowired
-    private GroupRepository groupRepository;
-
-    /**
-     * Gets a question by ID.
+     * Gets a Question by ID.
      *
      * @param id question ID
      * @return Question for the provided ID
      */
-    public QuestionEntity get(final long id) {
-        return questionRepository.findById(id).orElseThrow();
+    public Question get(final long id) {
+        return cache.get(id);
     }
 
-    /**
-     * Gets the list of chapter names for a course.
-     *
-     * @param course course
-     * @return list of chapter names
-     */
-    public List<String> getChapterNamesForCourse(final String course) {
-        final List<String> chapterNames = new ArrayList<>();
-        final Optional<List<GroupEntity>> groupEntityOpt = groupRepository.findByGroupAbbr(course);
-        groupEntityOpt.ifPresent(groupEntities -> groupEntities.stream().distinct().forEach(groupEntity -> {
-            final Optional<List<ChapterEntity>> chaptersOpt = chapterRepository.findByGroupId(groupEntity.getGroupId());
-            chaptersOpt.ifPresent(chapterEntities -> chapterNames.addAll(
-                    chapterEntities.stream()
-                            .distinct()
-                            .map(ChapterEntity::getChapterName)
-                            .collect(Collectors.toList())));
-        }));
-        return chapterNames.stream().distinct().collect(Collectors.toList());
-    }
-
-    /**
-     * Gets the distinct list of ACS codes for a course.
-     *
-     * @param course course
-     * @return distinct list of ACS codes
-     */
-    public List<String> getAcsCodesForCourse(final String course) {
-        final List<String> acsCodes = new ArrayList<>();
-        final Optional<List<GroupEntity>> groupEntityOpt = groupRepository.findByGroupAbbr(course);
-        groupEntityOpt.ifPresent(groupEntities -> groupEntities.stream().distinct().forEach(groupEntity -> {
-            final Optional<List<ACSEntity>> acsEntityOpt = acsRepository.findByGroupId(groupEntity.getGroupId());
-            acsEntityOpt.ifPresent(acsEntities -> acsCodes.addAll(
-                    acsEntities.stream().distinct().map(ACSEntity::getCode).collect(Collectors.toList())));
-        }));
-        return acsCodes.stream().distinct().collect(Collectors.toList());
-    }
-
-    /**
-     * Gets ACS Code for a question ID.
-     *
-     * @param questionId question ID
-     * @return ACS code
-     */
-    public List<String> getACSCodesForQuestionId(final Long questionId) {
-        final List<String> acsCodes = new ArrayList<>();
-        final Optional<List<QuestionACS>> questionACSListOpt = questionACSRepository.findByQuestionId(questionId);
-        if (questionACSListOpt.isPresent()) {
-            final List<QuestionACS> questionACSList = questionACSListOpt.get();
-            for (QuestionACS questionACS : questionACSList) {
-                final Optional<ACSEntity> acsEntityOpt = acsRepository.findById(questionACS.getAcsId());
-                if (acsEntityOpt.isPresent()) {
-                    final ACSEntity acsEntity = acsEntityOpt.get();
-                    if (!acsCodes.contains(acsEntity.getCode())) {
-                        acsCodes.add(acsEntity.getCode());
-                    }
-                }
-            }
-        }
-        return acsCodes;
-    }
-
-    /**
-     * Gets a list of question IDs for provided search criteria.
-     *
-     * @param groupAbbr optional group abbreviation
-     * @param chapter optional chapter
-     * @param acsCode optional ACS code
-     * @param learningStatementCode optional learning statement code
-     * @return list of question IDs
-     */
-    public List<Long> getQuestions(final String groupAbbr,
-                                   final Long chapter,
-                                   final String acsCode,
-                                   final String learningStatementCode) {
-        final List<Long> questionIds = new ArrayList<>();
-        getQuestionIdsForGroup(groupAbbr, questionIds);
-        getQuestionIdsForChapter(chapter, questionIds);
-        getQuestionIdsForACSCode(acsCode, questionIds);
-        getQuestionIdsForLSC(learningStatementCode, questionIds);
-        return questionIds.stream().distinct().collect(Collectors.toList());
-    }
-
-    /**
-     * Updates list of questionIds for the given learning statement code.
-     *
-     * @param learningStatementCode learning statement code
-     * @param questionIds question ID list
-     */
-    private void getQuestionIdsForLSC(final String learningStatementCode, final List<Long> questionIds) {
-        if (learningStatementCode != null) {
-            final List<Long> list = new ArrayList<>();
-            smcRepository.findByCode(learningStatementCode).ifPresent(subjectMatterCodeEntities ->
-                    subjectMatterCodeEntities.forEach(smc -> questionRepository.findByLscId(smc.getId())
-                            .ifPresent(questionEntities -> questionEntities.forEach(question ->
-                                    list.add(question.getQuestionId())))));
-            if (CollectionUtils.isEmpty(questionIds)) {
-                questionIds.addAll(list);
-            } else {
-                questionIds.retainAll(list);
-            }
-        }
-    }
-
-    /**
-     * Updates list of questionIds for the given ACS code.
-     *
-     * @param acsCode ACS code
-     * @param questionIds question ID list
-     */
-    private void getQuestionIdsForACSCode(final String acsCode, final List<Long> questionIds) {
-        if (acsCode != null) {
-            final List<Long> list = new ArrayList<>();
-            final Optional<List<ACSEntity>> acsListOpt = acsRepository.findByCode(acsCode);
-            if (acsListOpt.isPresent()) {
-                final List<ACSEntity> acsList = acsListOpt.get();
-                log.info("acsList.size() = {}", acsList.size());
-                for (final ACSEntity acs : acsList) {
-                    final Optional<List<QuestionACS>> questionACSListOpt =
-                        questionACSRepository.findByAcsId(acs.getId());
-                    if (questionACSListOpt.isPresent()) {
-                        final List<QuestionACS> questionACSList = questionACSListOpt.get();
-                        log.info("questionAcsList.size() = {}", questionACSList.size());
-                        for (final QuestionACS questionACS : questionACSList) {
-                            list.add(questionACS.getQuestionId());
-                        }
-                    }
-                }
-            }
-            if (CollectionUtils.isEmpty(questionIds)) {
-                questionIds.addAll(list);
-            } else {
-                questionIds.retainAll(list);
-            }
-        }
-    }
-
-    /**
-     * Updates list of questionIds for the given group.
-     *
-     * @param groupAbbr group abbreviation
-     * @param questionIds question ID list
-     */
-    private void getQuestionIdsForGroup(final String groupAbbr, final List<Long> questionIds) {
-        if (groupAbbr != null) {
-            groupRepository.findByGroupAbbr(groupAbbr)
-                .ifPresent(groups -> groups.forEach(group -> chapterRepository.findByGroupId(group.getGroupId())
-                    .ifPresent(chapters -> chapters.forEach(chapter ->
-                        questionRepository.findByChapterId(chapter.getChapterId())
-                            .ifPresent(questions -> questions.forEach(question ->
-                                questionIds.add(question.getQuestionId())))))));
-        }
-    }
-
-    /**
-     * Updates list of questionIds for the given chapter.
-     *
-     * @param chapter chapter
-     * @param questionIds question ID list
-     */
-    private void getQuestionIdsForChapter(final Long chapter, final List<Long> questionIds) {
-        if (chapter != null) {
-            final List<Long> list = new ArrayList<>();
-            final Optional<List<QuestionEntity>> questionEntityListOpt = questionRepository.findByChapterId(chapter);
-            if (questionEntityListOpt.isPresent()) {
-                final List<QuestionEntity> questionEntityList = questionEntityListOpt.get();
-                for (final QuestionEntity questionEntity : questionEntityList) {
-                    list.add(questionEntity.getQuestionId());
-                }
-            }
-            if (CollectionUtils.isEmpty(questionIds)) {
-                questionIds.addAll(list);
-            } else {
-                questionIds.retainAll(list);
-            }
-        }
-    }
-
-    /**
-     * Gets LearningStatementCode.
-     *
-     * @param lscId learning statement code ID
-     * @return code
-     */
-    public String getLearningStatementCode(final Long lscId) {
-        final Optional<SubjectMatterCodeEntity> smcOpt = smcRepository.findById(lscId);
-        return smcOpt.map(SubjectMatterCodeEntity::getCode).orElse(null);
-    }
 }

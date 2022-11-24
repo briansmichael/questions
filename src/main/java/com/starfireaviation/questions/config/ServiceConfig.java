@@ -16,64 +16,24 @@
 
 package com.starfireaviation.questions.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.starfireaviation.common.CommonConstants;
+import com.starfireaviation.common.service.DataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.client.RestTemplate;
-
-import java.time.Duration;
 
 /**
  * ServiceConfig.
  */
 @Slf4j
 @Configuration
-@EnableAsync
-@EnableTransactionManagement
 @EnableConfigurationProperties({ ApplicationProperties.class })
 public class ServiceConfig {
-
-    /**
-     * ObjectMapper.
-     *
-     * @return ObjectMapper
-     */
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
-
-    /**
-     * Creates a rest template with default timeout settings. The bean definition
-     * will be updated to accept timeout
-     * parameters once those are part of the Customer settings.
-     *
-     * @param restTemplateBuilder RestTemplateBuilder
-     * @param props   ApplicationProperties
-     *
-     * @return Rest Template with request, read, and connection timeouts set
-     */
-    @Bean
-    public RestTemplate restTemplate(
-            final RestTemplateBuilder restTemplateBuilder,
-            final ApplicationProperties props) {
-        return restTemplateBuilder
-                .setConnectTimeout(Duration.ofMillis(props.getConnectTimeout()))
-                .setReadTimeout(Duration.ofMillis(props.getReadTimeout()))
-                .additionalMessageConverters(new MappingJackson2HttpMessageConverter())
-                .build();
-    }
 
     /**
      * Hazelcast Questions Instance.
@@ -87,6 +47,16 @@ public class ServiceConfig {
                         new MapConfig("questions")
                                 .setTimeToLiveSeconds(CommonConstants.THREE_HUNDRED)
                                 .setMaxIdleSeconds(CommonConstants.THREE_HUNDRED)));
+    }
+
+    /**
+     * DataService.
+     *
+     * @return DataService
+     */
+    @Bean
+    public DataService dataservice() {
+        return new DataService();
     }
 
 }

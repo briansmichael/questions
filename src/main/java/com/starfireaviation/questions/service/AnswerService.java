@@ -16,13 +16,16 @@
 
 package com.starfireaviation.questions.service;
 
-import com.starfireaviation.questions.model.AnswerEntity;
-import com.starfireaviation.questions.model.AnswerRepository;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.map.IMap;
+import com.starfireaviation.common.model.Answer;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * AnswerService.
@@ -32,10 +35,18 @@ import java.util.List;
 public class AnswerService {
 
     /**
-     * AnswerRepository.
+     * Answer Cache.
      */
-    @Autowired
-    private AnswerRepository answerRepository;
+    private final IMap<Long, Answer> cache;
+
+    /**
+     * AnswerService.
+     *
+     * @param hazelcastInstance HazelcastInstance
+     */
+    public AnswerService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("answers");
+    }
 
     /**
      * Gets an answer.
@@ -43,18 +54,51 @@ public class AnswerService {
      * @param id Long
      * @return Answer
      */
-    public AnswerEntity get(final long id) {
-        return answerRepository.findById(id).orElseThrow();
+    public Answer get(final long id) {
+        return cache.get(id);
     }
 
     /**
      * Gets all answers for a question.
      *
-     * @param remoteId Long
-     * @return Answer
+     * @param questionId question ID
+     * @return list of Answer
      */
-    public List<AnswerEntity> getAnswerForQuestionId(final long remoteId) {
-        return answerRepository.findByQuestionId(remoteId).orElseThrow();
+    public List<Answer> findByQuestionId(final Long questionId) {
+        return cache
+                .values()
+                .stream()
+                .filter(answer -> Objects.equals(questionId, answer.getQuestionId()))
+                .collect(Collectors.toList());
     }
 
+    /**
+     * Saves an Answer.
+     *
+     * @param answer Answer
+     * @return Answer
+     */
+    public Answer save(final Answer answer) {
+        if (answer == null) {
+            return null;
+        } else if (answer.getId() == null) {
+            answer.setId(assignId());
+        }
+        return cache.put(answer.getId(), answer);
+    }
+
+    /**
+     * Finds an ID to assign to an entity.
+     *
+     * @return next ID value
+     */
+    private Long assignId() {
+        Long max = Long.MIN_VALUE;
+        for (final Long id : cache.keySet()) {
+            if (id > max) {
+                max = id;
+            }
+        }
+        return max + 1;
+    }
 }

@@ -18,73 +18,52 @@ package com.starfireaviation.questions.service;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.starfireaviation.common.model.Quiz;
+import com.starfireaviation.common.model.BinaryData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-/**
- * QuizService.
- */
 @Slf4j
 @Service
-public class QuizService {
+public class BinaryDataService {
 
     /**
-     * Quiz Cache.
+     * BinaryData Cache.
      */
-    private final IMap<Long, Quiz> cache;
+    private final IMap<Long, BinaryData> cache;
 
     /**
-     * QuizService.
+     * BinaryDataService.
      *
      * @param hazelcastInstance HazelcastInstance
      */
-    public QuizService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
-        cache = hazelcastInstance.getMap("quiz");
+    public BinaryDataService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("binarydata");
     }
 
     /**
-     * Gets a quiz.
+     * Gets an BinaryData by ID.
      *
-     * @param id Long
-     * @return Quiz
+     * @param id BinaryData ID
+     * @return BinaryData
      */
-    public Quiz get(final long id) {
+    public BinaryData get(final Long id) {
         return cache.get(id);
     }
 
     /**
-     * Gets all quizzes for a given lesson plan.
+     * Saves a BinaryData.
      *
-     * @param lessonPlanId Long
-     * @return Quiz
+     * @param binaryData BinaryData
+     * @return BinaryData
      */
-    public List<Quiz> findByLessonPlanId(final Long lessonPlanId) {
-        return cache
-                .values()
-                .stream()
-                .filter(quiz -> Objects.equals(quiz.getLessonPlanId(), lessonPlanId))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Saves a Quiz.
-     *
-     * @param quiz Quiz
-     * @return Quiz
-     */
-    public Quiz save(final Quiz quiz) {
-        if (quiz == null) {
+    public BinaryData save(final BinaryData binaryData) {
+        if (binaryData == null) {
             return null;
-        } else if (quiz.getId() == null) {
-            quiz.setId(assignId());
+        } else if (binaryData.getId() == null) {
+            binaryData.setId(assignId());
         }
-        return cache.put(quiz.getId(), quiz);
+        return cache.put(binaryData.getId(), binaryData);
     }
 
     /**
@@ -101,5 +80,4 @@ public class QuizService {
         }
         return max + 1;
     }
-
 }

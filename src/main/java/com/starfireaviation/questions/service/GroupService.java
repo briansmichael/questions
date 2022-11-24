@@ -18,73 +18,69 @@ package com.starfireaviation.questions.service;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.starfireaviation.common.model.Quiz;
+import com.starfireaviation.common.model.Group;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * QuizService.
- */
 @Slf4j
 @Service
-public class QuizService {
+public class GroupService {
 
     /**
-     * Quiz Cache.
+     * Group Cache.
      */
-    private final IMap<Long, Quiz> cache;
+    private final IMap<Long, Group> cache;
 
     /**
-     * QuizService.
+     * GroupService.
      *
      * @param hazelcastInstance HazelcastInstance
      */
-    public QuizService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
-        cache = hazelcastInstance.getMap("quiz");
+    public GroupService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("groups");
     }
 
     /**
-     * Gets a quiz.
+     * Gets a Group by abbr.
      *
-     * @param id Long
-     * @return Quiz
+     * @param groupAbbr group abbr
+     * @return GroupEntity
      */
-    public Quiz get(final long id) {
-        return cache.get(id);
-    }
-
-    /**
-     * Gets all quizzes for a given lesson plan.
-     *
-     * @param lessonPlanId Long
-     * @return Quiz
-     */
-    public List<Quiz> findByLessonPlanId(final Long lessonPlanId) {
+    public List<Group> findByGroupAbbr(final String groupAbbr) {
         return cache
                 .values()
                 .stream()
-                .filter(quiz -> Objects.equals(quiz.getLessonPlanId(), lessonPlanId))
+                .filter(group -> groupAbbr.equalsIgnoreCase(group.getGroupAbbr()))
                 .collect(Collectors.toList());
     }
 
     /**
-     * Saves a Quiz.
+     * Gets a Group by ID.
      *
-     * @param quiz Quiz
-     * @return Quiz
+     * @param id Group ID
+     * @return Group
      */
-    public Quiz save(final Quiz quiz) {
-        if (quiz == null) {
+    public Group get(final Long id) {
+        return cache.get(id);
+    }
+
+    /**
+     * Saves a Group.
+     *
+     * @param group Group
+     * @return Group
+     */
+    public Group save(final Group group) {
+        if (group == null) {
             return null;
-        } else if (quiz.getId() == null) {
-            quiz.setId(assignId());
+        } else if (group.getGroupId() == null) {
+            group.setGroupId(assignId());
         }
-        return cache.put(quiz.getId(), quiz);
+        return cache.put(group.getGroupId(), group);
     }
 
     /**
@@ -101,5 +97,4 @@ public class QuizService {
         }
         return max + 1;
     }
-
 }

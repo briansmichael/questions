@@ -18,73 +18,52 @@ package com.starfireaviation.questions.service;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.starfireaviation.common.model.Quiz;
+import com.starfireaviation.common.model.TextConst;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-/**
- * QuizService.
- */
 @Slf4j
 @Service
-public class QuizService {
+public class TextConstService {
 
     /**
-     * Quiz Cache.
+     * TextConst Cache.
      */
-    private final IMap<Long, Quiz> cache;
+    private final IMap<Long, TextConst> cache;
 
     /**
-     * QuizService.
+     * TextConstService.
      *
      * @param hazelcastInstance HazelcastInstance
      */
-    public QuizService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
-        cache = hazelcastInstance.getMap("quiz");
+    public TextConstService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("textconst");
     }
 
     /**
-     * Gets a quiz.
+     * Gets a TextConst by ID.
      *
-     * @param id Long
-     * @return Quiz
+     * @param id TextConst ID
+     * @return TextConst
      */
-    public Quiz get(final long id) {
+    public TextConst get(final Long id) {
         return cache.get(id);
     }
 
     /**
-     * Gets all quizzes for a given lesson plan.
+     * Saves a TextConst.
      *
-     * @param lessonPlanId Long
-     * @return Quiz
+     * @param textConst TextConst
+     * @return TextConst
      */
-    public List<Quiz> findByLessonPlanId(final Long lessonPlanId) {
-        return cache
-                .values()
-                .stream()
-                .filter(quiz -> Objects.equals(quiz.getLessonPlanId(), lessonPlanId))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Saves a Quiz.
-     *
-     * @param quiz Quiz
-     * @return Quiz
-     */
-    public Quiz save(final Quiz quiz) {
-        if (quiz == null) {
+    public TextConst save(final TextConst textConst) {
+        if (textConst == null) {
             return null;
-        } else if (quiz.getId() == null) {
-            quiz.setId(assignId());
+        } else if (textConst.getId() == null) {
+            textConst.setId(assignId());
         }
-        return cache.put(quiz.getId(), quiz);
+        return cache.put(textConst.getId(), textConst);
     }
 
     /**
@@ -101,5 +80,4 @@ public class QuizService {
         }
         return max + 1;
     }
-
 }

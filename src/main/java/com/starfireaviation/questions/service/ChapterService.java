@@ -18,7 +18,7 @@ package com.starfireaviation.questions.service;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.starfireaviation.common.model.Quiz;
+import com.starfireaviation.common.model.Chapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -27,64 +27,61 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * QuizService.
- */
 @Slf4j
 @Service
-public class QuizService {
+public class ChapterService {
 
     /**
-     * Quiz Cache.
+     * Chapter Cache.
      */
-    private final IMap<Long, Quiz> cache;
+    private final IMap<Long, Chapter> cache;
 
     /**
-     * QuizService.
+     * ChapterService.
      *
      * @param hazelcastInstance HazelcastInstance
      */
-    public QuizService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
-        cache = hazelcastInstance.getMap("quiz");
+    public ChapterService(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
+        cache = hazelcastInstance.getMap("questions");
     }
 
     /**
-     * Gets a quiz.
+     * Gets a chapter by group ID.
      *
-     * @param id Long
-     * @return Quiz
+     * @param id Chapter ID
+     * @return Chapter
      */
-    public Quiz get(final long id) {
-        return cache.get(id);
-    }
-
-    /**
-     * Gets all quizzes for a given lesson plan.
-     *
-     * @param lessonPlanId Long
-     * @return Quiz
-     */
-    public List<Quiz> findByLessonPlanId(final Long lessonPlanId) {
+    public List<Chapter> findByGroupId(final Long id) {
         return cache
                 .values()
                 .stream()
-                .filter(quiz -> Objects.equals(quiz.getLessonPlanId(), lessonPlanId))
+                .filter(chapter -> Objects.equals(id, chapter.getGroupId()))
                 .collect(Collectors.toList());
     }
 
     /**
-     * Saves a Quiz.
+     * Gets a Chapter by ID.
      *
-     * @param quiz Quiz
-     * @return Quiz
+     * @param id Chapter ID
+     * @return Chapter
      */
-    public Quiz save(final Quiz quiz) {
-        if (quiz == null) {
+    public Chapter get(final Long id) {
+        return cache.get(id);
+    }
+
+    /**
+     * Saves a Chapter.
+     *
+     * @param chapter Chapter
+     * @return Chapter
+     */
+    public Chapter save(final Chapter chapter) {
+        if (chapter == null) {
             return null;
-        } else if (quiz.getId() == null) {
-            quiz.setId(assignId());
+        } else if (chapter.getChapterId() == null) {
+            chapter.setChapterId(assignId());
         }
-        return cache.put(quiz.getId(), quiz);
+        return cache.put(chapter.getChapterId(), chapter);
     }
 
     /**
@@ -101,5 +98,4 @@ public class QuizService {
         }
         return max + 1;
     }
-
 }

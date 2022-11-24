@@ -16,27 +16,29 @@
 
 package com.starfireaviation.questions.controller;
 
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.map.IMap;
+import com.starfireaviation.common.model.ACS;
 import com.starfireaviation.common.model.Answer;
-import com.starfireaviation.common.model.Image;
+import com.starfireaviation.common.model.Chapter;
 import com.starfireaviation.common.model.Question;
-import com.starfireaviation.questions.config.ApplicationProperties;
-import com.starfireaviation.questions.model.AnswerEntity;
-import com.starfireaviation.questions.model.ImageEntity;
-import com.starfireaviation.questions.model.QuestionEntity;
+import com.starfireaviation.common.model.Image;
+import com.starfireaviation.questions.service.ACSService;
 import com.starfireaviation.questions.service.AnswerService;
+import com.starfireaviation.questions.service.ChapterService;
+import com.starfireaviation.questions.service.GroupService;
 import com.starfireaviation.questions.service.ImageService;
+import com.starfireaviation.questions.service.QuestionACSService;
+import com.starfireaviation.questions.service.QuestionRefImageService;
 import com.starfireaviation.questions.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,74 +66,93 @@ public class QuestionController {
     private ImageService imageService;
 
     /**
-     * ApplicationProperties.
+     * ChapterService.
      */
     @Autowired
-    private ApplicationProperties applicationProperties;
+    private ChapterService chapterService;
 
     /**
-     * Questions Cache.
+     * GroupService.
      */
-    private final IMap<Long, Question> cache;
+    @Autowired
+    private GroupService groupService;
 
     /**
-     * Question IDs Cache.
+     * ACSService.
      */
-    private final IMap<String, List<Long>> idsCache;
+    @Autowired
+    private ACSService acsService;
 
     /**
-     * Constructor.
-     *
-     * @param hazelcastInstance HazelcastInstance
+     * QuestionACSService.
      */
-    public QuestionController(@Qualifier("questions") final HazelcastInstance hazelcastInstance) {
-        cache = hazelcastInstance.getMap("questions");
-        idsCache = hazelcastInstance.getMap("questionIds");
-    }
+    @Autowired
+    private QuestionACSService questionACSService;
+
+    /**
+     * QuestionRefImageService.
+     */
+    @Autowired
+    private QuestionRefImageService questionRefImageService;
 
     /**
      * Gets list of question IDs matching search criteria.
      *
-     * @param group optional group abbreviation
+     * @param groupAbbr optional group abbreviation
      * @param chapter optional chapter
      * @param acsCode optional ACS code
      * @param learningStatementCode optional learning statement code
      * @return list of question ids
      */
     @GetMapping
-    public List<Long> getQuestions(@RequestParam(value = "group", required = false) final String group,
+    public List<Long> getQuestions(@RequestParam(value = "groupAbbr", required = false) final String groupAbbr,
                                    @RequestParam(value = "acs", required = false) final String acsCode,
                                    @RequestParam(value = "chapter", required = false) final Long chapter,
                                    @RequestParam(value = "lsc", required = false) final String learningStatementCode) {
-        final String key = formKey(group, acsCode, chapter, learningStatementCode);
-        if (idsCache.containsKey(key)) {
-            return idsCache.get(key);
-        }
-        final List<Long> questionIds = questionService.getQuestions(group, chapter, acsCode, learningStatementCode);
-        idsCache.put(key, questionIds);
-        return questionIds;
+        final List<Long> questionIds = new ArrayList<>();
+        getQuestionIdsForGroup(groupAbbr, questionIds);
+        getQuestionIdsForChapter(chapter, questionIds);
+        getQuestionIdsForACSCode(acsCode, questionIds);
+        getQuestionIdsForLSC(learningStatementCode, questionIds);
+        return questionIds.stream().distinct().collect(Collectors.toList());
     }
 
     /**
      * Gets the list of chapter names for a course.
      *
-     * @param course course
+     * @param groupAbbr Group abbreviation
      * @return list of chapter names
      */
-    @GetMapping(path = "/{course}/chapters")
-    public List<String> getChaptersForCourse(@PathVariable("course") final String course) {
-        return questionService.getChapterNamesForCourse(course);
+    @GetMapping(path = "/{groupAbbr}/chapters")
+    public List<String> getChaptersForCourse(@PathVariable("groupAbbr") final String groupAbbr) {
+        final List<String> chapterNames = new ArrayList<>();
+        groupService.findByGroupAbbr(groupAbbr).forEach(group ->
+                chapterNames.addAll(chapterService
+                        .findByGroupId(group.getGroupId())
+                        .stream()
+                        .map(Chapter::getChapterName)
+                        .collect(Collectors.toList())));
+        return chapterNames.stream().distinct().collect(Collectors.toList());
     }
 
     /**
      * Gets the list of ACS codes for a course.
      *
-     * @param course course
+     * @param groupAbbr Group Abbreviation
      * @return list of ACS codes
      */
-    @GetMapping(path = "/{course}/acs")
-    public List<String> getACSCodesForCourse(@PathVariable("course") final String course) {
-        return questionService.getAcsCodesForCourse(course);
+    @GetMapping(path = "/{groupAbbr}/acs")
+    public List<String> getACSCodesForCourse(@PathVariable("groupAbbr") final String groupAbbr) {
+        final List<String> acsCodes = new ArrayList<>();
+        groupService.findByGroupAbbr(groupAbbr)
+                .forEach(group -> {
+                    acsCodes.addAll(acsService
+                            .findByGroupId(group.getGroupId())
+                            .stream()
+                            .map(ACS::getCode)
+                            .collect(Collectors.toList()));
+                });
+        return acsCodes.stream().distinct().collect(Collectors.toList());
     }
 
     /**
@@ -140,14 +161,9 @@ public class QuestionController {
      * @param id question ID
      * @return Question
      */
-    @GetMapping(path = "/{id}")
-    public Question getQuestion(@PathVariable("id") final Long id) {
-        if (cache.containsKey(id)) {
-            return cache.get(id);
-        }
-        final Question question = map(questionService.get(id));
-        cache.put(id, question);
-        return question;
+    @GetMapping(path = "/{questionId}")
+    public Question getQuestion(@PathVariable("questionId") final Long id) {
+        return questionService.get(id);
     }
 
     /**
@@ -156,111 +172,122 @@ public class QuestionController {
      * @param id question ID
      * @return Answer list
      */
-    @GetMapping(path = "/{id}/answers")
-    public List<Answer> getQuestionAnswers(@PathVariable("id") final Long id) {
-        if (cache.containsKey(id)) {
-            return cache.get(id).getAnswers();
-        }
-        return answerService
-                .getAnswerForQuestionId(id)
-                .stream()
-                .map(this::map)
-                .collect(Collectors.toList());
+    @GetMapping(path = "/{questionId}/answers")
+    public List<Answer> getQuestionAnswers(@PathVariable("questionId") final Long id) {
+        return answerService.findByQuestionId(id);
     }
 
     /**
      * Gets images by Question ID.
      *
-     * @param id question ID
+     * @param questionId question ID
      * @return Image list
      */
-    @GetMapping(path = "/{id}/images")
-    public List<Image> getQuestionImages(@PathVariable("id") final Long id) {
-        if (cache.containsKey(id)) {
-            return cache.get(id).getImages();
+    @GetMapping(path = "/{questionId}/images")
+    public List<Image> getQuestionImages(@PathVariable("questionId") final Long questionId) {
+        final List<Image> images = new ArrayList<>();
+        questionRefImageService
+                .findByQuestionId(questionId)
+                .forEach(questionRefImage -> {
+                    images.add(imageService.get(questionRefImage.getImageId()));
+                });
+        return images;
+    }
+
+    /**
+     * Gets ACS Code for a question ID.
+     *
+     * @param questionId question ID
+     * @return ACS code
+     */
+    @GetMapping(path = "/{questionId}/acs")
+    public List<String> getACSCodesForQuestionId(@PathVariable("questionId") final Long questionId) {
+        final List<String> acsCodes = new ArrayList<>();
+        questionACSService
+                .findByQuestionId(questionId)
+                .forEach(questionACS -> acsCodes
+                        .add(acsService.get(questionACS.getAcsId()).getCode()));
+        return acsCodes.stream().distinct().sorted().collect(Collectors.toList());
+    }
+
+    /**
+     * Updates list of questionIds for the given learning statement code.
+     *
+     * @param learningStatementCode learning statement code
+     * @param questionIds question ID list
+     */
+    private void getQuestionIdsForLSC(final String learningStatementCode, final List<Long> questionIds) {
+        if (learningStatementCode != null) {
+            final List<Long> list = questionService
+                    .findByLearningStatementCode(learningStatementCode)
+                    .stream()
+                    .map(Question::getId).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(questionIds)) {
+                questionIds.addAll(list);
+            } else {
+                questionIds.retainAll(list);
+            }
         }
-        return imageService
-                .getImageForQuestionId(id)
-                .stream()
-                .map(this::map)
-                .collect(Collectors.toList());
     }
 
     /**
-     * Forms a key from the provided values.
+     * Updates list of questionIds for the given ACS code.
      *
-     * @param group group
-     * @param acs ACS code
+     * @param acsCode ACS code
+     * @param questionIds question ID list
+     */
+    private void getQuestionIdsForACSCode(final String acsCode, final List<Long> questionIds) {
+        if (acsCode != null) {
+            final List<Long> list = new ArrayList<>();
+            acsService
+                    .findByCode(acsCode)
+                    .forEach(acs -> questionACSService
+                            .findByAcsId(acs.getId())
+                            .forEach(questionACS -> list.add(questionACS.getQuestionId())));
+            if (CollectionUtils.isEmpty(questionIds)) {
+                questionIds.addAll(list);
+            } else {
+                questionIds.retainAll(list);
+            }
+        }
+    }
+
+    /**
+     * Updates list of questionIds for the given group.
+     *
+     * @param groupAbbr group abbreviation
+     * @param questionIds question ID list
+     */
+    private void getQuestionIdsForGroup(final String groupAbbr, final List<Long> questionIds) {
+        if (groupAbbr != null) {
+            groupService
+                    .findByGroupAbbr(groupAbbr)
+                    .forEach(group -> chapterService
+                            .findByGroupId(group.getGroupId())
+                            .forEach(chapter -> questionService
+                                    .findByChapterId(chapter.getChapterId())
+                                    .forEach(question -> questionIds.add(question.getId()))));
+        }
+    }
+
+    /**
+     * Updates list of questionIds for the given chapter.
+     *
      * @param chapter chapter
-     * @param lsc learning statement code
-     * @return key
+     * @param questionIds question ID list
      */
-    private String formKey(final String group, final String acs, final Long chapter, final String lsc) {
-        return String.format("group=%s;acs=%s;chapter=%s;lsc=%s", group, acs, chapter, lsc);
-    }
-
-    /**
-     * Map AnswerEntity to Answer.
-     *
-     * @param answerEntity AnswerEntity
-     * @return Answer
-     */
-    private Answer map(final AnswerEntity answerEntity) {
-        final Answer answer = new Answer();
-        answer.setId(answerEntity.getAnswerId());
-        answer.setLastModified(answerEntity.getLastModified());
-        answer.setQuestionId(answerEntity.getQuestionId());
-        answer.setChoice(answerEntity.getChoice());
-        answer.setCorrect(answerEntity.getCorrect());
-        answer.setText(answerEntity.getText());
-        return answer;
-    }
-
-    /**
-     * Map ImageEntity to Image.
-     *
-     * @param imageEntity ImageEntity
-     * @return Image
-     */
-    private Image map(final ImageEntity imageEntity) {
-        final Image image = new Image();
-        image.setId(imageEntity.getId());
-        image.setImageName(imageEntity.getImageName());
-        image.setLastModified(imageEntity.getLastModified());
-        image.setDescription(imageEntity.getDescription());
-        image.setFigureSectionId(imageEntity.getFigureSectionId());
-        image.setFileName(imageEntity.getFileName());
-        image.setGroupId(imageEntity.getGroupId());
-        image.setImageLibraryId(imageEntity.getImageLibraryId());
-        image.setPicType(imageEntity.getPicType());
-        image.setPixelsPerNM(imageEntity.getPixelsPerNM());
-        image.setSortBy(imageEntity.getSortBy());
-        image.setTestId(imageEntity.getTestId());
-        image.setUrl(applicationProperties.getMediaUrlBase() + image.getFileName());
-        return image;
-    }
-
-    /**
-     * Maps QuestionEntity to Question.
-     *
-     * @param questionEntity QuestionEntity
-     * @return Question
-     */
-    private Question map(final QuestionEntity questionEntity) {
-        final Question question = new Question();
-        question.setId(questionEntity.getQuestionId());
-        question.setLastModified(questionEntity.getLastModified());
-        question.setOldQuestionId(questionEntity.getOldQuestionId());
-        question.setChapterId(questionEntity.getChapterId());
-        question.setExplanation(questionEntity.getExplanation());
-        question.setSmcId(questionEntity.getSmcId());
-        question.setSource(questionEntity.getSource());
-        question.setText(questionEntity.getText());
-        question.setAcsCodes(questionService.getACSCodesForQuestionId(question.getId()));
-        question.setAnswers(getQuestionAnswers(question.getId()));
-        question.setImages(getQuestionImages(question.getId()));
-        question.setLearningStatementCode(questionService.getLearningStatementCode(questionEntity.getLscId()));
-        return question;
+    private void getQuestionIdsForChapter(final Long chapter, final List<Long> questionIds) {
+        if (chapter != null) {
+            final List<Long> list = new ArrayList<>();
+            questionService
+                    .findByChapterId(chapter)
+                    .forEach(question -> list.add(question.getId()));
+            if (CollectionUtils.isEmpty(questionIds)) {
+                questionIds.addAll(list);
+            } else {
+                questionIds.retainAll(list);
+            }
+        }
     }
 
 }
