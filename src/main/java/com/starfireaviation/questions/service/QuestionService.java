@@ -77,20 +77,6 @@ public class QuestionService {
     }
 
     /**
-     * Gets a Questions by subject matter code.
-     *
-     * @param smcId subject matter code ID
-     * @return list of questions
-     */
-    public List<Question> findBySmcId(final Long smcId) {
-        return cache
-                .values()
-                .stream()
-                .filter(question -> Objects.equals(question.getSmcId(), smcId))
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Gets a Question by ID.
      *
      * @param id question ID
@@ -100,4 +86,33 @@ public class QuestionService {
         return cache.get(id);
     }
 
+    /**
+     * Saves a Question.
+     *
+     * @param question Question
+     * @return Question
+     */
+    public Question save(final Question question) {
+        if (question == null) {
+            return null;
+        } else if (question.getId() == null) {
+            question.setId(assignId());
+        }
+        return cache.put(question.getId(), question);
+    }
+
+    /**
+     * Finds an ID to assign to an entity.
+     *
+     * @return next ID value
+     */
+    private Long assignId() {
+        Long max = Long.MIN_VALUE;
+        for (final Long id : cache.keySet()) {
+            if (id > max) {
+                max = id;
+            }
+        }
+        return max + 1;
+    }
 }

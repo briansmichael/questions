@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -94,6 +96,18 @@ public class QuestionController {
      */
     @Autowired
     private QuestionRefImageService questionRefImageService;
+
+    /**
+     * Saves a Question.
+     *
+     * @param question Question
+     * @return Question
+     */
+    @PostMapping
+    @PutMapping
+    public Question save(final Question question) {
+        return questionService.save(question);
+    }
 
     /**
      * Gets list of question IDs matching search criteria.
